@@ -1,0 +1,381 @@
+template(name='badge_card')
+    .ui.flui.card
+        a.content.zoomer(href="/d/#{badge}/#{_id}")
+            .ui.three.column.grid
+                .two.wide.column
+                    .left.floated
+                        if icon 
+                            +i name=icon color=icon_color
+                        img.ui.avatar.image(src="{{c.url _author.image_id}}")
+                        |badge icon
+                        // |#{_author.username}
+                .twelve.wide.column
+                    .f15.ui.centered.header #{title}
+                    // if currentUser
+                    //     +text_field key='title' view_classes='ui center aligned inline huge header'
+                .two.wide.column
+                    .right.floated
+                        // |#{when}
+                        +model_icon
+        if youtube_id 
+            +youtube_field key='youtube_id'
+        img.ui.big.centered.image(src="{{c.url image_id width=10 height=10}}")
+        .content
+                |!{body}
+                |!{brief}
+                |!{content}
+        .content
+            .ui.grid
+                .sixteen.wide.column
+                    .left.floated
+                        +voting
+                    .right.floated
+                        | #{views} views
+            .description
+                .ui.header Skills
+                    +badge_card_skill_item
+                // .ui.header lat: #{lat}
+                // .ui.header lng: #{lng}
+                //     // i.newspaper.large.icon
+                if location 
+                    .ui.label 
+                        i.marker.icon
+                        |#{location}
+                // .ui.image.large.label 
+                //     img.ui.image(src="{{c.url _author.image_id width=400 height=400}}")
+                    // i.user.icon
+                    |#{_author_username}
+                // if tags 
+                //     each seven_tags 
+                //         .ui.basic.label #{this}
+
+                +eft_view_item_small
+            .content
+
+                        // if _author_id
+                        //     +author_info
+                        
+                            //- i.eye.icon
+                        //     each viewer_usernames
+                        //         .ui.small.inverted.label #{this}
+                        // //- +comments
+                    .sixteen.wide.column
+                        +eft_viewer_small
+                        span.left.floated
+                            if icon 
+                                +i name=icon color=icon_color
+                            img.ui.avatar.image(src="{{c.url _author.image_id}}" title=_author.username)
+                        span.right.floated
+                            +creation_info
+                    // if currentUser.admin_mode
+                //     +print_this
+                //     +remove_button
+                // each tags 
+                //     .ui.small.label #{this}
+            // if template_exists
+            //     +Template.dynamic template=model_template
+        // .extra.content
+            +comments
+
+
+
+    // .card
+    //     .image
+    //         img.ui.raw.image(src="{{c.url image_id width=400 height=300 crop='fill'}}")    
+    //     .content
+    //         .ui.header
+    //             |#{title}
+    //         // i.marker.icon
+            // |#{location} 
+    //         |!{description}
+    //         each badgers
+    //             img.ui.avatar.image(src="{{c.url image_id height=200 width=200 gravity='face' crop='fill'}}" title=name)
+    //             |#{name}
+    
+template(name='badge_card_skill_item')
+    a.ui.item(href="/d/skill/#{_id}")
+        +icolor name=icon cl='ui image'
+        // +image_view key='image_id'  cl='zoom ui tiny image'
+        .content
+            |!{title}
+                    
+            |!{body}
+            // a.ui.small.header.inline.lowercase(href="/d/org/#{_id}/")
+            //     |#{price_per_serving}c / #{serving_unit}
+            // .ui.small.inline.header #{when}
+
+
+    // .ui.list
+    //     each user_badges
+    //         a.ui.item(href="/d/badge/#{_id}")
+    //             +icolor name=icon cl='ui image'
+    //             .content
+    //                 .header #{title}
+    //                 .description    
+    //                     each tags 
+    //                         .ui.label #{this}
+
+
+
+template(name='badge_view')
+    .ui.stackable.padded.grid
+        .row
+            .five.wide.column
+                +eft_viewer
+                .ui.header 
+                    small author
+                a.ui.header(href="/user/#{_author.username}") 
+                    img.ui.avatar.image(src="{{c.url _author.image_id height=200 width=200 gravity='face' crop='fill'}}")
+                    |#{_author.username}
+                .ui |BADGE ICON - icons8 or upload custom svg?
+
+                +number_field key='bounty' label='bounty'
+                +textarea_field key='description' label='description'
+                // +image_view key='image_id' label='image'
+                +image_field key='image_id' icon='image' label='image'
+                +image_field key='banner_image_id' icon='image' label='banner image'
+                // +model_crud model='project' color='blue'
+                +block template='model_crud' model='skill' color='red'
+                div 
+                +array_field key='tags' label='tags'
+                .spacer
+                .spacer
+                // +comments
+                //- +array_field key='location_tags' label='location_tags'
+            .six.wide.column
+                +eft_viewer
+                +badge_card
+                +textarea_field key='body' tagline="describe this badge..."
+            .five.wide.column
+                
+                // +badge_card
+                // badger picker should be global field
+                +multi_user_field key='badger'
+                .ui.header 
+                    +i name='badger'
+                    |badgers
+                each badgers
+                    a.ui.button(href="/user/#{username}") 
+                        img.ui.avatar.image(src="{{c.url image_id height=200 width=200 gravity='face' crop='fill'}}")
+                        |#{name}
+                if is_editing
+                    .ui.basic.center.aligned.segment
+                        +eft_picker color="FF73EA" icon='food' label='food'
+                        +eft_picker color="B785E1" icon='home' label='housing'
+                        +eft_picker color="7229AF" icon='tshirt' label='clothing'
+                        +eft_picker color="1255B8" icon='car' label='transportation'
+                        +eft_picker color="83DFF4" icon='lightning' label='energy'
+                        +eft_picker color="42E8C4" icon='leaf' label='zero waste'
+                        +eft_picker color="40C057" icon='smile' label='wellness'
+                        +eft_picker color="FAB005" icon='university' label='education'
+                        +eft_picker color="FD7E14" icon='paint brush' label='art'
+                        +eft_picker color="FF0000" icon='users' label="community core"  
+
+                // .ui.header 
+                //     +honey_badger
+                //     |honey badgers
+                // each honey_badgers
+                //     a.ui.basic.button(href="/user/#{username}") 
+                //         img.ui.avatar.image(src="{{c.url image_id height=200 width=200 gravity='face' crop='fill'}}")
+                //         |#{name}
+                // //- .ui.fluid.green.button.submit
+                // //-     i.checkmark.icon
+                // //-     |submit
+                    .eight.wide.column
+                        +text_field key='title' icon='header'
+                        +slug_edit key='slug' icon='slug'
+                        +icon_edit key='icon' label='icon'
+                        +textarea_field key='description' label='description'
+                        +image_field key='image_id' label='image'
+                        div 
+                        +array_field key='tags' label='tags'
+                        +text_field key='location' label='location' icon='marker'
+                        +array_field key='location_tags' label='location_tags'
+                        +boolean_field key='published'
+                        +group_crud
+                    .eight.wide.column
+                        .ui.header
+                            +i name='badger'
+                            |badgers
+                        each badgers
+                            a.ui.compact.button(href="/user/#{username}") 
+                                img.ui.avatar.image(src="{{c.url image_id height=200 width=200 gravity='face' crop='fill'}}")
+                                |#{name}
+                            i.remove.link.icon.remove_badger
+                        .ui.segment
+                            .ui.small.header add badgers
+                            each unselected_badgers
+                                .ui.basic.circular.compact.button.add_badger
+                                    img.ui.avatar.circular.compact.image(src="{{c.url image_id height=200 width=200 gravity='face' crop='fill'}}")
+                                    |#{name}
+                
+                // .ui.header
+                //     +honey_badger
+                //     |honey badgers
+                // each honey_badgers
+                //     a.ui.compact.button(href="/user/#{username}") 
+                //         img.ui.avatar.image(src="{{c.url image_id height=200 width=200 gravity='face' crop='fill'}}")
+                //         |#{name}
+                //     i.remove.link.icon.remove_honey_badger
+                // .ui.segment
+                //     .ui.small.header add honey badgers
+                //     each unselected_honey_badgers
+                //         .ui.basic.button.add_honey_badger
+                //             img.ui.avatar.compact.image(src="{{c.url image_id height=200 width=200 gravity='face' crop='fill'}}")
+                //             |#{name}
+
+
+// template(name='badge_edit')
+//     .ui.stackable.padded.grid
+//         .centered.middle.aligned.row 
+//             .sixteen.wide.column
+//                 a.ui.green.cicular.icon.big.button.fly_left(href="/badge/#{_id}" title='save')
+//                     i.checkmark.big.icon
+//                 .ui.inline.header
+//                     small edit badge
+//                     |#{title}
+//                 i.remove.circular.link.icon.delete_item
+//         .row 
+//             .eight.wide.column
+//                 +text_field key='title' icon='header'
+//                 +slug_edit key='slug' icon='slug'
+//                 +icon_edit key='icon' label='icon'
+//                 +textarea_field key='description' label='description'
+//                 +image_field key='image_id' label='image'
+//                 div 
+//                 +array_field key='tags' label='tags'
+//                 +text_field key='location' label='location' icon='marker'
+//                 +array_field key='location_tags' label='location_tags'
+//                 +boolean_field key='published'
+//                 +group_crud
+//             .eight.wide.column
+//                 .ui.header
+//                     +i name='badger'
+//                     |badgers
+//                 each badgers
+//                     a.ui.compact.button(href="/user/#{username}") 
+//                         img.ui.avatar.image(src="{{c.url image_id height=200 width=200 gravity='face' crop='fill'}}")
+//                         |#{name}
+//                     i.remove.link.icon.remove_badger
+//                 .ui.segment
+//                     .ui.small.header add badgers
+//                     each unselected_badgers
+//                         .ui.basic.circular.compact.button.add_badger
+//                             img.ui.avatar.circular.compact.image(src="{{c.url image_id height=200 width=200 gravity='face' crop='fill'}}")
+//                             |#{name}
+                
+//                 // .ui.header
+//                 //     +honey_badger
+//                 //     |honey badgers
+//                 // each honey_badgers
+//                 //     a.ui.compact.button(href="/user/#{username}") 
+//                 //         img.ui.avatar.image(src="{{c.url image_id height=200 width=200 gravity='face' crop='fill'}}")
+//                 //         |#{name}
+//                 //     i.remove.link.icon.remove_honey_badger
+//                 // .ui.segment
+//                 //     .ui.small.header add honey badgers
+//                 //     each unselected_honey_badgers
+//                 //         .ui.basic.button.add_honey_badger
+//                 //             img.ui.avatar.compact.image(src="{{c.url image_id height=200 width=200 gravity='face' crop='fill'}}")
+//                 //             |#{name}
+
+template(name='badge_crud')
+    // .ui.segment
+    .ui.styled.accordion
+        .title
+            .dropdown.icon
+            .ui.inline.header
+                // +i name='shield'
+                // |#{picked_badges.count}
+                | badges
+        .content
+            .ui.icon.large.input 
+                if badge_search_value
+                    i.large.red.remove.link.icon.zoomer.clear_search
+                else 
+                    i.search.icon
+                input.badge_search(type='text' placeholder='search' value=badge_search_value)
+            if badge_results
+                // .ui.selection.link.animated.list
+                each badge_results
+                    .ui.basic.circular.large.button.pick_badge.zoomer
+                        i.grey.plus.icon
+                        if image_id
+                            img.ui.avatar.image(src="{{c.url image_id width=300 height=300 gravity='face' crop='fill'}}")
+                        |#{title}
+            if badge_search_value
+                .ui.large.button.create_badge(title='add')
+                    i.plus.icon
+                    |#{badge_search_value}
+            .ui.header
+                // +i name='shield'
+                |#{picked_badges.count}
+                | badges
+            // if picked_badges
+            .smallscroll
+                each picked_badges
+                     .ui.horizontal.fluid.card.show_modal
+                        .content
+                            .ui.grid
+                                .row
+                                    // .column
+                                    .fourteen.wide.column
+                                        .left.floated
+                                            a.ui.inline.header
+                                                |!{title}
+                                            div
+                                            +eft_viewer_small
+                                            // img(src="{{c.url image_id width=50 height=50}}")
+                                            // div    
+                                            // |!{content}
+                                    .two.wide.column
+                                        .right.floated
+                                            if _is 'model' 'badge'
+                                                +ismall name='what-i-do' color='42E8C4' cl='ui inline image'
+                                            div
+                                            |#{when}
+                                .row
+                                    .six.wide.column
+                                        img.invert(src="{{c.url image_id width=10 height=10}}")
+                                    .ten.wide.column
+                                        |!{content}
+                                .sixteen.wide.column
+                                    if currentUser.admin_mode
+                                        .ui.tertiary.large.button.zoomer.remove_badge 
+                                            i.remove.icon
+                                            |remove 
+                                        .ui.tertiary.large.button.zoomer.toggle_assign 
+                                            i.user.plus.icon
+                                            | assign
+                                        if assigned_to 
+                                            |assigned to #{asigned_to.username}
+                                        else 
+                                            |unnassigned
+                                        if is_assigning 
+                                            each badge_holders 
+                                                .ui.label #{username}
+                                        else 
+                                            with assigned_users
+                                                .ui.green.label #{username}
+                                        a.ui.tertiary.right.floated.icon.large.button.zoomer.fly_right(href="/badge/#{_id}/edit" title='edit badge')
+                                            i.setting.icon
+                                    else
+                                        // else if can_take
+                                        if has_taken 
+                                            |taken by #{taken_user.name}
+                                            .ui.large.button.release_badge
+                                                i.undo.icon
+                                                |release 
+                                        else if can_take
+                                            .ui.tertiary.large.button.zoomer.take_badge 
+                                                i.checkmark.icon
+                                                | take
+                                        else if is_taken 
+                                            |taken by #{taken_user.name}
+                                    a.ui.tertiary.large.button.zoomer(href="/d/badge/#{_id}")
+                                        |view
+                                        i.chevron.right.icon
+                    .ui.modal 
+                        .ui.header hi
+                        
+                        

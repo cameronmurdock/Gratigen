@@ -1,0 +1,774 @@
+template(name='home')
+    .ui.padded.divided.celled.stackable.grid
+        if currentUser.admin_mode
+            // iframe(class="airtable-embed" src="https://airtable.com/embed/shrThOxEaw6jVkcDF?backgroundColor=gray&layout=card&viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;")
+        .three.wide.scrolling.column
+
+            // +session_toggle key='expand_leftbar' icon='horizontal-line'
+            // +session_toggle key='add_mode' icon='plus'
+            //.ui.icon.button.show_model
+                i.large.plus.icon
+            // .ui.fluid.small.button.toggle_leftbar
+            //     i.chevron.left.icon
+            // .ui.hidden.divider
+            // a.ui.fluid.icon.basic.circular.large.button(href="/icons" title='gai!')
+            //     +icolor name='brain'
+            //     div
+            //     |gai browser
+            +dash_user_info
+            // if currentUser.admin_mode
+                // .ui.segment.shadow.mobile.hidden
+                //     img.ui.image(src="{{c.url 'batflash'}}" class=darkmode_class)
+            .ui.mobile.hidden
+                +user_impact_graph
+        .nine.wide.column
+            // iframe(style="border: none;border-radius: 10px;" width="100%" height="800px" src="https://home.gratigen.one")
+            // +infinite_scroll_example
+            unless session_get 'fullview_id'
+                unless is_searching
+                    unless currentUser.admin_mode
+                        .ui.one.column.grid 
+                            .centered.column
+                            
+                                // .ui.fluid.input 
+                                //     textarea
+                                // // div
+                                +online_users
+                .ui.center.aligned.column.grid
+                    // unless currentUser.admin_mode
+                    .ui.animated.fade.tertiary.circular.large.center.alligned.zoomer.button.launch_modal.add_doc(style="color:green")
+                        .visible.content
+                            // i.big.green.play.dark-mode.icon(class=gicon)
+                            +ilarge name='play-button-circled--v1' color='40C057' cl='ui image'
+    
+                        .hidden.content
+                            .ui.massive.header Engage
+                    .centered   
+                 
+                        // +smaba
+                        +eft_dropdown
+            
+                        .ui.icon.left.action.input
+                            if current_site_search
+                                i.remove.large.red.link.icon.clear_search.zoomer(title='clear search')
+                            else
+                                i.search.large.grey.link.icon.zoomer(title='search')
+                            input.search_site(type='text' autocomplete="off" value=current_site_search placeholder='ask loom...')
+                        +model_dropdown
+                        // tags
+                        each picked_tags
+                            .ui.label
+                                i.remove.icon
+                                |#{this}
+                    div
+                        +session_set key='view_mode' value='grid' icon='th' 
+                        +session_set key='view_mode' value='list' icon='list'
+                        +session_set key='view_mode' value='feed' icon='stream'
+                        +session_toggle key='show_map' icon='map'
+                        +session_toggle key='show_calendar' icon='calendar'
+                        .ui.button.view_latest(class=view_latest_class)
+                            i.clock.icon 
+                            |latest
+                        .ui.button.view_bookmarks(class=viewing_bookmarks)
+                            i.bookmark.icon 
+                            |bookmarks
+            .scrolling
+                // if session_get 'fullview_id'
+                //     .ui.circular.basic.purple.icon.button.clear_fullview 
+                //         i.large.remove.icon
+                //     with fullview_doc 
+                //         .ui.one.cards
+                //             +home_card
+                if session_is 'view_mode' 'list'
+                    .ui.divided.selection.items 
+                        each doc_results 
+                            +home_list_item
+                else if session_is 'view_mode' 'grid'
+                    .ui.three.stackable.cards
+                        each doc_results
+                            +home_card
+                else    
+                    .ui.ten.wide.column.centered.mobile.hidden
+                        .ui.centered.one.cards.scrollin
+                            each doc_results
+                                +home_card
+                    .ui.sixteen.wide.column.centered.mobile.only
+                        .ui.centered.one.cards.scrolling
+                            each doc_results
+                                +home_card
+            // .eight.wide.column.bordered
+            // unless currentUser.admin_mode
+        .four.wide.scrolling.column
+            +block template='discord'
+            // +icon_browser
+            // +block template='latest_updated_block' title='latest' icon='time-machine' color='blue'
+            +block template='user_avatars' title='users' icon='groups' color='green'
+            +block title='colaborators' icon='groups' color='blue'
+            // hm
+            div
+            // +gmap
+            // div
+            // +comet_chat_block
+            // .ui.divider
+            // +block template='gratigen' open=true icon='donate' color='yellow'
+            // +icon_item designer='phatplus' iconSet='phatplus-linear' category='business-online' commonName='server' color='orange'
+            // +icon_item platform='wanicon-lineal' commonName='server' color='red'
+            // +gratigen
+            // .ui.divider
+            
+            +block template='bookmark_block' title='bookmarks' icon='bookmark' color='orange'
+            // +bookmark_block
+            // +model_block model='post' icon='blog' color='42E8C4' title='latest posts'
+            // +model_block model='role' icon='shield' color='42E8C4' title='latest roles'
+            // +model_block model='resource' icon='car' color='42E8C4' title='nearest resources'
+            // +model_block model='org' icon='groups' color='42E8C4' title='organizations'
+            // +my_things
+            // +block template='gchat' icon='chat' color='blue'
+            if session_is 'show_map' true
+                +mapbox
+            if session_is 'show_calendar' true 
+                +calendar_view
+            +block template='charts' icon='chart' color='red'
+            // +charts
+            // if currentUser.admin_mode
+            +user_connection_graph
+            // +block template='online_allies'
+            // +alerts
+            // a.ui.button(href="www.github.com/repjackson/gratigen" target='_window')
+            //     i.github.icon 
+            //     |github code
+            // +block template='models_chart'
+            +block template='checklist' icon='tasks' color='green'
+            +block template='gratigen' icon='hand-holding-heart' color='red'
+
+                // +online_allies
+            // +thing_maker
+            // if current_thing.
+            //     if _is 'model'_edit
+            // [current_thing_type]_edit
+            //     +thing_picker
+            //      +eft_picker
+        // .ui.add.modal    
+        //     +add
+        // .ui.fullscreen.modal
+        //     with current_viewing_thing
+        //         .ui.grid
+        //             .sixteen.wide.column
+        //                 +model_icon
+        //             .thirteen.wide.centered.column
+        //                 //on click go to full page
+        //                 .ui.inline.centered.header.huge #{title}
+    
+        //         .scrollin.content
+        //             if session_is 'editing' true
+        //                 +Template.dynamic template=edit_template
+        //             else 
+        //                 +Template.dynamic template=view_template
+        // +view_chats
+        
+    
+template(name='infinite_scroll_example')
+    .ui.demo.segment
+    h3.ui.dividing.center.aligned.header Infinite Scroll Example
+    p
+    .ui.divider
+    p
+    .ui.divider
+    p
+    .ui.divider
+    p
+    .ui.divider
+    .ui.large.centered.inline.text.loader
+        | Adding more content...
+
+template(name='discord')
+    // iframe(src="https://discord.com/widget?id=1077757754007093248&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts")
+    .ui.inverted.segment
+        widgetbot(server='1078631369216905226' channel='1078631369216905229' width='800' height='600')
+        script(src='https://cdn.jsdelivr.net/npm/@widgetbot/html-embed')
+
+
+
+template(name='models_chart')
+    iframe(style="background: #21313C;border: none;border-radius: 2px;box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);" width="100%" height="100%" src="https://charts.mongodb.com/charts-project-0-seecq/embed/charts?id=eff00e0b-77a0-4b15-8130-7f6d743361e2&maxDataAge=3600&theme=light&autoRefresh=false")
+
+
+template(name='icon_browser')
+    // .ui.header icons
+    // .ui.large.input
+    //     input.search_task(type='text' placeholder='add task')
+    // |#{complete_count} complete
+    // |#{incomplete_count} incomplete
+    // .ui.divided.list
+    //     each org_task_docs
+    //         +task_item_small
+
+template(name='gcal')
+    iframe(src="https://calendar.google.com/calendar/embed?src=c_da87bb84ed0c3082acd899c7447c4651752e0007bfe155b07fe319ca61939e22%40group.calendar.google.com&ctz=America%2FLos_Angeles" style="border: 0" width="800" height="600" frameborder="0" scrolling="no")
+
+template(name='home_block')
+// template(name='model_chart')
+    details.ui.fluid.styled.accordion
+        summary.title
+            if icon 
+                i.icon(class=icon)
+            if label    
+                |#{label}
+            else
+                |#{template}
+        .content
+            +Template.dynamic template=template
+
+template(name='model_dropdown')
+    .ui.simple.dropdown.button
+        i.database.icon
+        i.dropdown.icon 
+        if current_model_filter
+            |#{current_model_filter}
+        .menu
+            // .ui.dropdown-content
+            // .item
+            +filter_model model='post' icon='for-you' color='1255B8'
+            //blue
+            +filter_model model='offer' icon='hand-holding-heart' color='FF73EA'
+            //pink
+            +filter_model model='request' icon='commercial' color='40C057'     
+            //green
+            div
+            +filter_model model='org' icon='building' color='83DFF4'
+            +filter_model model='groups' icon='groups' color='ffd000'
+            //light blue
+            +filter_model model='project' icon='project' color='7229AF' 
+            //violet
+            +filter_model model='event' icon='calendar' color='FAB005'
+            //yellow
+            +filter_model model='role' icon='what-i-do' color='42E8C4'
+            //turquoise
+            +filter_model model='task' icon='task' color='B785E1'
+            
+            +filter_model model='product' icon='shop' color='40C057'
+            
+            +filter_model model='service' icon='service' color='FF73EA'
+    
+            //lavender
+            +filter_model model='resource' icon='field-and-tractor' color='FD7E14'  
+            //orange
+            +filter_model model='skill' icon='wrench' color='ff0000'
+            +filter_model model='badge' icon='badge' color='ff0000'
+            //red
+            // +filter_model model='food' icon='food' 83DFF4
+            // .ui.dropdown-content
+
+
+template(name='eft_dropdown')
+    .ui.simple.dropdown.button
+        i.heart.icon
+        i.dropdown.icon 
+        if current_model_filter
+            |#{current_model_filter}
+        .menu
+            +eft_filter color="red" icon='heart' label='care'
+            +eft_filter color="FF73EA" icon='food' label='food'
+                //pink
+            +eft_filter color="B785E1" icon='home' label='housing'
+                //lavender
+            +eft_filter color="6b0fb9" icon='tshirt' label='clothing'
+                //purple
+            +eft_filter color="0000f7" icon='smile' label='wellness'
+                //darkblue
+            +eft_filter color="00ddff" icon='car' label='travel'
+                //lightblue
+            +eft_filter color="00ffc3" icon='dog' label='animals'
+                //turquoise
+            +eft_filter color="148023" icon='leaf' label='plants'
+                //darkgreen
+            +eft_filter color="35ca2d" icon='recycle' label='regen'
+                //brightgreen
+            +eft_filter color="ffff00" icon='lightning' label='energy'
+                //yellow
+            +eft_filter color="ffd000" icon='paint brush' label='art'
+                //gold
+            +eft_filter color="ff6f00" icon='university' label='education'
+                //orange
+            +eft_filter color="FF0000" icon='users' label='community'
+                //red
+            +eft_filter color="000000" icon='ambulance' label='emergency'
+
+template(name='engage')
+    .ui.animated.fade.tertiary.circular.large.center.alligned.zoomer.button.launch_modal.add_doc(style="color:green")
+        .visible.content
+            // i.big.green.play.dark-mode.icon(class=gicon)
+            +ilarge name='play-button-circled--v1' color='40C057' cl='ui image'
+
+        .hidden.content
+            .ui.massive.header Engage
+
+template(name='smaba')
+
+    +eft_dropdown
+
+    .ui.icon.left.action.input
+        if current_site_search
+            i.remove.large.red.link.icon.clear_search.zoomer(title='clear search')
+        else
+            i.search.large.grey.link.icon.zoomer(title='search')
+        input.search_site(type='text' autocomplete="off" value=current_site_search placeholder='ask loom...')
+    +model_dropdown
+    // tags
+    each picked_tags
+        .ui.label
+            i.remove.icon
+            |#{this}
+    div
+    +session_set key='view_mode' value='grid' icon='th' 
+    +session_set key='view_mode' value='list' icon='list'
+    +session_set key='view_mode' value='feed' icon='stream'
+    +session_toggle key='show_map' icon='map'
+    +session_toggle key='show_calendar' icon='calendar'
+    .ui.button.view_latest(class=view_latest_class)
+        i.clock.icon 
+        |latest
+    .ui.button.view_bookmarks(class=viewing_bookmarks)
+        i.bookmark.icon 
+        |bookmarks
+    .scrolling
+        // if session_get 'fullview_id'
+        //     .ui.circular.basic.purple.icon.button.clear_fullview 
+        //         i.large.remove.icon
+        //     with fullview_doc 
+        //         .ui.one.cards
+        //             +home_card
+        if session_is 'view_mode' 'list'
+            .ui.divided.selection.items 
+                each doc_results 
+                    +home_list_item
+        else if session_is 'view_mode' 'grid'
+            .ui.three.stackable.cards
+                each doc_results
+                    +home_card
+        else    
+            .ui.ten.wide.column.centered.mobile.hidden
+                .ui.centered.one.cards.scrollin
+                    each doc_results
+                        +home_card
+            .ui.sixteen.wide.column.centered.mobile.only
+                .ui.centered.one.cards.scrolling
+                    each doc_results
+                        +home_card
+
+    .ui.one.centered.fluid.cards
+        // users
+        each user_search_results
+            button.ui.button.goto_doc
+                if image_id
+                    img.ui.avatar.image(src="{{c.url image_id width=200 height=200 gravity='face' crop='fill'}}")
+                |#{username}
+                
+                
+        // doc results       
+        each doc_search_results
+            +home_card
+            // .card.goto_doc(title=model)
+            //     if image_id
+            //         img.ui.avatar.image(src="{{c.url image_id width=200 height=200 gravity='face' crop='fill'}}")
+            //     |{{cut title}}
+    
+    
+    // template(name='latest_updated_block')
+    //     .ui.animated.selection.list 
+    //         each latest_updated_docs
+    //             a.item(href="/d/#{model}/#{_id}")
+    //                 if image_id
+    //                     img.ui.avatar.image.zoomer(src="{{c.url image_id height='300' width='300'}}")
+    //                 .content
+    //                     .header {{cut title}}
+    //                     |updated {{from_now _updated_timestamp}}
+                    
+    
+    
+
+template(name='user_avatars')
+    each all_users
+        if image_id
+            a.fly_right(href="/user/#{username}" title=username)
+                img.ui.tiny.circular.inline.image.zoomer(src="{{c.url image_id height='300' width='300' gravity='face' crop='fill'}}")
+            // else 
+            //     i.large.user.link.icon.zoomer
+            
+
+
+// template(name='bookmark_block')
+//     each bookmarked_docs 
+//         a.ui.tertiary.button.zoomer(href="/d/#{model}/#{_id}")
+//             img.uif.avatar.image.zoomer(src="{{c.url image_id height='300' width='300'}}")
+//             |#{title}
+
+
+// template(name='quickchat')
+//     .ui.inline.header 
+//         i.chat.icon
+//         |quickchat
+//     .ui.list
+//         each model_docs_helper 'quickchat_message' 
+//             .item #{body}
+//     .ui.fluid.icon.input 
+//         input.add_quickchat(type='text' placeholder='add...')
+// template(name='your_bookmarks')
+//     details.ui.fluid.styled.accordion
+//         summary.title
+//             i.large.bookmark.icon
+//             | bookmarks
+//         .content 
+//             each bookmark_docs 
+//                 a.ui.button(href="/#{model}/#{_id}")
+//                     |#{title}
+// template(name='comet_chat_block')
+//     i.large.chat.icon(title='popup comet chat')
+//     // .ui.inline.header 
+//     //     i.chat.icon
+//     //     |popup chat 
+//     +launch_comet name='wolverine' id='superhero2' avatar='https://data-us.cometchat.io/assets/images/avatars/wolverine.png'
+//     +launch_comet name='captain_america' id='superhero2' avatar='https://data-us.cometchat.io/assets/images/avatars/captainamerica.png'
+//     +launch_comet name='spiderman' id='superhero3' avatar='https://data-us.cometchat.io/assets/images/avatars/spiderman.png'
+//     +launch_comet name='iron man' id='superhero1' avatar='https://data-us.cometchat.io/assets/images/avatars/ironman.png'
+//     #cometchat.inver
+
+// template(name='launch_comet')
+//     .ui.circular.basic.icon.button.launch(title=name)
+//         img.ui.avatar.image(src=avatar)
+//         // |#{name}
+
+template(name='model_block')
+    details.ui.fluid.styled.accordion
+        summary.title
+            // .ui.header 
+            i.large.icon(class=icon)
+            // +i name=icon cl='ui avatar image'
+            |#{title}
+            // i.dropdown.icon
+        .content
+            each model_block_docs
+                a.ui.large.tertiary.button.fly_right(href="/#{model}/#{_id}")
+                    if image_id
+                        img.ui.avatar.image(src="{{c.url image_id}}" title=_author.username)
+                    |#{title}
+
+template(name='charts')
+    // +i name='sad'
+    .ui.blue.small.progress.invert(data-percent='72' title="{{to_percent sadness}}% sadness")
+        .bar
+        .progress.invert
+            .label {{to_percent sadness}}% sadness 
+    // +i name='happy'
+    .ui.green.small.progress.invert(data-percent='88' title="{{to_percent joy}}% joy")
+        .bar
+        .progress.invert
+            .label {{to_percent joy}}% joy 
+    // +i name='fear'
+    .ui.yellow.small.progress.invert(data-percent='77' title="{{to_percent fear}}% fear")
+        .bar
+        .progress.invert
+            .label {{to_percent fear}}% fear 
+    // +i name='disgust'
+    // .ui.yellow.small.progress.invert(data-percent='34' title="{{to_percent disgust}}% disgust")
+    //     .bar
+    //     .progress.invert
+    //         .label {{to_percent disgust}}% disgust 
+    // +i name='angry'
+    .ui.red.small.progress.invert(data-percent='66' title="{{to_percent anger}}% anger")
+        .bar
+        .progress.invert
+            .label {{to_percent anger}}% anger
+
+
+
+//template(name='thing_maker_modal')        
+template(name='home_card')
+    // if _is 'model' 'role'
+    //     +role_card
+    // else if _is 'model' 'event'
+    //     +event_card
+    // else if _is 'model' 'recipe'
+    //     +recipe_card
+    // else
+    // a.ui.card(href="/d/#{model}/#{_id}")
+    .ui.card
+        .content.smallscroll 
+            // a.ui.centered.inline.header.zoomer
+            a.ui.centered.inline.header.zoomer(href="/d/#{model}/#{_id}")
+                |#{title}
+            span.left.floated
+                if icon 
+                    +i name=icon color=icon_color
+                a(href="/user/#{username}" title='view profile')
+                    img.ui.avatar.image(src="{{c.url _author.image_id height=200}}" title=_author.username)
+                    |#{_author.username}
+                div
+                // +parent_block
+                // +parent_avatar
+            span.right.floated
+                |#{when}
+                +model_icon
+                if currentUser.admin_mode
+                    if published 
+                        i.green.icon(title='published')
+                    else 
+                        i.yellow.save.icon(title='draft')
+            div
+            if location
+                |#{location}            
+            if location
+                |#{datetime}
+        // if youtube_id 
+        //     +youtube_view key='youtube_id'
+        // if link
+        //     .content.smallscroll 
+        //         iframe.invert(width='100%' height='500px' src=link frameborder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowfullscreen='')
+
+        .content.smallscroll 
+            |{{nl2br  body}}
+            |!{brief}
+            |!{content}
+        if link_id
+            +link_field
+        else if youtube_id
+            +youtube_view key='youtube_id'
+        else if image_id
+            +image_view
+
+            img.ui.fluid.image.toggle_fullview.pointer(src="{{c.url image_id width=500 height=500}}")
+        .content 
+            .description
+                // .ui.header lat: #{lat}
+                // .ui.header lng: #{lng}
+                //     // i.newspaper.large.icon
+                if location 
+                    .ui.label 
+                        i.marker.icon
+                        |#{location}
+                // .ui.image.large.label 
+                //     img.ui.image(src="{{c.url _author.image_id width=400 height=400}}")
+                    // i.user.icon
+                    |#{_author_username}
+                // if tags 
+                //     each seven_tags 
+                //         .ui.basic.label #{this}
+
+                +eft_view_item_small
+      
+            .content
+                .left.floated
+                    +voting
+                a.right.floated.zoomer.fly_right(href="/d/#{model}/#{_id}")
+                    | #{views} views
+                // if _author_id
+                //     +author_info
+                
+                    //- i.eye.icon
+                //     each viewer_usernames
+                //         .ui.small.inverted.label #{this}
+                // //- +comments
+                div
+                +eft_viewer_small
+                // if currentUser.admin_mode
+                //     +print_this
+                //     +remove_button
+                // each tags 
+                //     .ui.small.label #{this}
+                if currentUser.admin_mode 
+                    +remove_button
+                +give_button
+            // if template_exists
+            //     +Template.dynamic template=model_template
+        .extra.content
+            +comments
+      
+template(name='home_list_item')
+    // if _is 'model' 'role'
+    //     +role_card
+    // else if _is 'model' 'event'
+    //     +event_card
+    // else if _is 'model' 'recipe'
+    //     +recipe_card
+    // else 
+    .ui.item
+        img.ui.small.inline.image(src="{{c.url image_id width=400 height=400}}")
+        .content
+            a.ui.inline.header.zoomer(href="/d/#{model}/#{_id}")
+                |#{title}
+            span.left.floated
+                if icon 
+                    +i name=icon color=icon_color
+                img.ui.avatar.image(src="{{c.url _author.image_id}}" title=_author.username)
+                
+                |#{_author.username}
+                div
+                +parent_block
+            span.right.floated
+                |#{when}
+                +model_icon
+            div
+            if location
+                |#{location}            
+            if location
+                |#{datetime}
+        if youtube_id 
+            +youtube_view key='youtube_id'
+        .content 
+                |!{body}
+                |!{brief}
+                |!{content}
+        .content 
+            .description
+                // .ui.header lat: #{lat}
+                // .ui.header lng: #{lng}
+                //     // i.newspaper.large.icon
+                // .ui.image.large.label 
+                //     img.ui.image(src="{{c.url _author.image_id width=400 height=400}}")
+                    // i.user.icon
+                    |#{_author_username}
+                // if tags 
+                //     each seven_tags 
+                //         .ui.basic.label #{this}
+
+                +eft_view_item_small
+      
+            .content
+                .left.floated
+                    +voting
+                .right.floated
+                    | #{views} views
+                // if _author_id
+                //     +author_info
+                
+                    //- i.eye.icon
+                //     each viewer_usernames
+                //         .ui.small.inverted.label #{this}
+                // //- +comments
+                div
+                +eft_viewer_small
+                // if currentUser.admin_mode
+                //     +print_this
+                //     +remove_button
+                // each tags 
+                //     .ui.small.label #{this}
+                +comments
+            // if template_exists
+            //     +Template.dynamic template=model_template
+      
+      
+      
+template(name='model_icon')
+    if _is 'model' 'org' 
+        +i name='groups' color='83DFF4' cl='ui inline mini image'
+    if _is 'model' 'project'
+        +i name='project' color='7229AF' cl='ui inline mini image'
+    if _is 'model' 'post'
+        +i name='for-you' color='1255B8' cl='ui inline mini image'
+    if _is 'model' 'event'
+        +i name='calendar' color='FAB005' cl='ui inline mini image'
+    if _is 'model' 'task'
+        +i name='task' color='B785E1' cl='ui inline mini image'
+    if _is 'model' 'offer'
+        +i name='hand-holding-heart' color='FF73EA' cl='ui inline mini image'
+    if _is 'model' 'request'
+        +i name='commercial' color='40C057' cl='ui inline mini image'
+    if _is 'model' 'role'
+        +i name='what-i-do' color='42E8C4' cl='ui inline mini image'
+    if _is 'model' 'resource'
+        +i name='field-and-tractor' color='42E8C4' cl='ui inline mini image'
+
+      
+      
+template(name='calendar_view')    
+    // .ui.header 
+    //     // i.calendar.icon
+    //     |calendar 
+    
+    #inline_calendar 
+        
+      
+template(name='user_impact_graph')
+    .ui.segment
+        .ui.header user impact graph
+        a(href="https://observablehq.com/@d3/zoomable-sunburst" target="_window")
+            // img.ui.image(src="/d3_sunburst.jpeg")
+            img.ui.image(src="{{c.url 'd3_sunburst' }}")
+
+        
+template(name='user_connection_graph')
+    .ui.segment
+        .ui.header user connection graph
+        a(href="https://observablehq.com/@garciaguillermoa/force-directed-graph" target="_window")
+            img.ui.image(src="{{c.url 'network_graph' }}")
+            // img.ui.image(src="/network_graph.png")
+    
+template(name='my_things')
+    .ui.segment
+        |my_things
+        div
+        |eft_categories x gratigen_thing_type x mainpage_search_bar x datetime_range x selected_map_area x my_things
+        //(displays small cards of dashboard search parameters)
+        div
+        +home_card
+        //should be small_card    
+    
+    
+template(name='eft_filter')
+    a.ui.header.item.toggle_item.invert(style="color:##{color}" class=side_item_class)
+        span.glabel #{label}
+        i.icon.gicon(class=icon)
+        
+        
+        // if session_is 'expand_leftbar' true
+        
+        // if is_toggled
+        //     i.large.checkmark.icon
+
+           
+template(name='dash_user_info') 
+     .ui.two.column.grid
+            .six.wide.column
+                img.ui.circular.small.image(src="{{c.url currentUser.image_id width=120 height=120 gravity='face' crop='fill'}}") 
+            .ten.wide.column
+                .ui.header.printme
+                    |#{currentUser.username}
+                    div
+                    |#{currentUser.tagline}
+
+
+    // unless session_is 'expand_leftbar' true
+    //     img.ui.small.circular.image(src="{{c.url currentUser.image_id width=600 height=600 gravity='face' crop='fill'}}")
+    //     .ui.header
+    //         | #{currentUser.username}
+    //     .ui.small
+    //         | #{currentUser.points}pts
+    //     .ui.header
+    //         | #{currentUser.tagline}
+    // else     
+    //     a.ui.two.column.grid.zoomer(href="/user/#{currentUser.username}")
+    //         .column
+    //             img.ui.small.circular.image(src="{{c.url currentUser.image_id width=600 height=600 gravity='face' crop='fill'}}")
+    //         .column
+    //             .ui.header
+    //                 | #{currentUser.username}
+    //             .ui.small
+    //                 | #{currentUser.points}pts
+    //             .ui.header
+    //                 | #{currentUser.tagline}
+
+    // i.user.icon
+    // .ui.inline.header #{currentUser.name}
+    // strong #{currentUser.points}p
+    // div
+    // .ui.inline.header #{currentUser.tagline}
+        
+           
+           
+template(name='filter_model')
+    .item.inverted.pick_model.zoomer(class=button_class)
+        // .item.pick_model.zoomer(class=button_class)
+        // +i name=icon color=color cl="ui mini inline image"
+        +i name=icon color=color cl="model_item_icon ui inline image"
+        // i.exchange.large.icon
+        |#{model}

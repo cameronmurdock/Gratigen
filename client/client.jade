@@ -1,0 +1,282 @@
+head
+    title Gratigen
+    meta(name='viewport', content='user-scalable=yes, initial-scale=1.0, maximum-scale=3.0, width=device-width')
+    meta(name='apple-mobile-web-app-capable', content='yes')
+    meta(name='apple-mobile-web-app-status-bar-style', content='black')
+    
+    link(rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon.png")
+    link(rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png")
+    link(rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png")
+
+    link(rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5")
+    meta(name="apple-mobile-web-app-title" content="gratigen")
+    meta(name="application-name" content="gratigen")
+    meta(name="msapplication-TileColor" content="#da532c")
+    meta(name="theme-color" content="#000000")
+    
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    // link(href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative&display=swap" rel="stylesheet")
+    // link(href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet")
+    // link(href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet")
+    link(href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap" rel="stylesheet")
+    // link(href="https://fonts.googleapis.com/css?family=Varela+Round&display=swap" rel="stylesheet")
+    
+    link(rel='stylesheet' type='text/css' href='https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.8/dist/semantic.min.css')
+    link(rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png")
+    link(rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png")
+    link(rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png")
+    link(rel="manifest" href="/site.webmanifest")
+    // link(href="https://cdn.jsdelivr.net/npm/suneditor@latest/dist/css/suneditor.min.css" rel="stylesheet")
+    // link(rel='stylesheet', href='/layerslider/css/layerslider.css', type='text/css')
+    // link(rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+    //      integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+    //      crossorigin="")
+
+    // script(src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    //      integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+    //      crossorigin="")
+    // <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin=""/>
+    // <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+
+    
+    
+    // script(src='./qrcode.min.js')
+    script(src='https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js')
+    script(src='https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.8/dist/semantic.min.js')
+    
+    // script(src='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.js')
+    // link(href='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.css' rel='stylesheet')
+    
+    // script(src='https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.js')
+    // link(href='https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.css' rel='stylesheet')
+    
+    // script(src='https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.js')
+    // link(href='https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.css' rel='stylesheet')
+
+    
+    
+    //- // External libraries: GreenSock
+    // - /* script(src='/layerslider/js/jquery.js', type='text/javascript') */
+    
+    
+    // script(src="https://cdn.jsdelivr.net/npm/sweetalert2@9")
+    // script(src="https://cdn.jsdelivr.net/npm/suneditor@latest/dist/suneditor.min.js")
+    // script(src="https://cdn.jsdelivr.net/npm/suneditor@latest/src/lang/en.js")
+    
+    // script(src="https://widget-js.cometchat.io/v3/cometchatwidget.js")
+
+    //- script(async='', src='https://www.googletagmanager.com/gtag/js?id=UA-140259454-1')
+    script.
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        
+        gtag('config', 'G-GLYPPRGJFQ');
+
+    // link(type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsmind@0.5/style/jsmind.css")
+    // script(type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsmind@0.5/es6/jsmind.js")
+
+    
+template(name='page_view')
+    .ui.stackable.grid 
+        .sixteen.wide.column 
+            +Template.dynamic template=page_template
+    
+template(name='doc_view')
+    with current_doc 
+        .ui.stackable.padded.grid.scrolling
+            .middle.aligned.row
+                // img.ui.fluid.image.bg_overlay(src="{{c.url image_id crop='fit'}}")
+                .three.wide.column
+                    .left_floated
+                        .ui.breadcrumb
+                            a.section.zoomer(href='/')
+                                |home
+                            .divider /
+                            // +parent_block
+                            with parent_doc
+                                a.section.zoomer.fly_left(href="/d/#{model}/#{_id}")
+                                    img.ui.avatar.image(src="{{c.url image_id width=200 }}")
+                                    |#{title}
+                            // each _parents
+                            //     a.section(href="/d/#{model}/#{_id}")
+                            //         img.ui.avatar.image(src="{{c.url image_id }}")
+                            //         |#{title}
+                            //     .divider /
+                            // a.section.zoomer(href="/d/#{model}/#{_id}")
+                            //     img.ui.avatar.image(src="{{c.url image_id }}")
+                            //     |#{title}
+                        // a.ui.circular.tertiary.large.button.zoomer.fly_left(href="/")
+                        //     i.left.chevron.icon
+                        //     with parent_model
+                        //         +ismall name=icon color=icon_color
+                        //     // |orgs
+                        //     |#{model}s
+                .nine.wide.center.aligned.column
+                    span.glow
+                        +text_field key='title' view_classes='ui center aligned inline huge header'
+                    // .ui.centered.inline.huge.center.aligned.header
+                    //     |#{title}
+                .four.wide.right.aligned.column
+                    // +live_button
+                    +subscribe_button
+                    +bookmark_button
+                    // .floated
+                    // if can_edit
+                    if currentUser
+                        +edit_button
+                    if currentUser.editing 
+                        +remove_button
+            .one.column.row.subtemplate
+                .column
+                    +Template.dynamic template=doc_view_template
+                    // +link_field key='link'
+                    // +boolean_field key='published' label='published'
+        if currentUser.admin_mode 
+            .ui.inverted.red.segment
+                .ui.header 
+                    i.shield.icon
+                    |admin
+                +text_field key='model' label='change model'
+    
+template(name='layout')
+    +modal
+    // .ui.button.make_mind 
+    //     |make mind
+    img.ui.fluid.image.bg_overlay(src="{{c.url current_image_id }}")    
+    +nav
+    // #jsmind_container
+    // +rightbar
+    // +chatbar
+    // if currentUser.history_ids.length
+    if currentUser.view_searchbar
+        +historybar
+    // img.ui.fluid.image.home_banner(src="{{c.url 'frontrange'}}" class=darkmode_class)
+    // #main.ui.bottom.attached.pushable.segment.maincontent
+    // +addbar
+    // .pushable.maincontet.scrolling
+    .ui.equal.width.grid(class=darkmode_class)
+        .column.horani
+            +yield
+        // if currentUser.view_chatbar
+        //     .column.horani
+        //         // .ui.header chat
+        //         +quickchat
+        //         +comet_chat_block
+                // +view_chats
+    //     // +topbar
+    //     +leftbar
+    //     +rightbar
+    +footer
+    // if currentUser.admin_mode
+
+
+template(name='historybar')
+    .ui.small.attached.menu.hscroll.searchbar(class=darkmode_class)
+        +nav_search
+        if currentUser
+            .item 
+                i.clock.icon    
+                |#{currentUser.history_ids.length}
+                |history
+            each currentUser.history_ids
+                .item(class=history_item_class)
+                    i.remove.link.icon.clear_history_doc.zoomer(title='clear entry')
+                    with doc_by_id
+                        span.goto_doc.zoomer.pointer
+                            if image_id
+                                img.ui.avatar.image.zoomer(src="{{c.url image_id width=200 height=200 crop='crop'}}")    
+                            span.zoomer #{title} #{_name}
+                .ui.popup 
+                    with doc_by_id
+                        if image_id
+                            img.ui.small.image(src="{{c.url image_id width=400 height=400 crop='fit'}}")    
+                        .ui.inline.header #{title} #{_name}
+                        .ui.basic.label
+                            i.grey.database.icon
+                            |#{model}
+                        +author_info
+                        if tags 
+                            i.red.tags.icon.invert(title='tags')
+                            each tags 
+                                .ui.small.basic.label #{this}
+        div
+    
+
+template(name='mlayout')
+    .global_container(class=darkmode_class)
+        unless is_frontdesk
+            +nav
+        //- img.ui.fluid.image.checkin_banner(src="{{c.url 'frontrange' width=1000 height=1000 crop='crop'}}")    
+        +yield
+
+
+template(name='dashboard')
+    // .ui.padded.stackable.grid
+    //     .ui.big.button
+
+template(name='not_found')
+    .ui.center.aligned.padded.basic.segment
+        +ibig name='park-bench' 
+            |browser_back
+        .ui.center.aligned.header page not found
+        a.ui.big.basic.button(href="/") 
+            +i name='home' 
+            // |home
+        .ui.basic.big.button.browser_back
+            i.large.undo.icon
+            |go back
+
+
+template(name='shortcut_modal')
+    .ui.shortcut.fullscreen.modal
+        .ui.header keyboard shortcuts
+        .content
+            .ui.large.list
+                each shortcuts
+                    .item 
+                        .header #{combo}
+                        .content #{action}
+
+
+template(name='footer')
+    .ui.equal.width.stackable.grid 
+        .sixteen.wide.column
+            // page chat by default, maybe replace individual template calls
+            with current_doc
+                +print_this
+                +block template='comments' label='comments' icon='chat' color='blue' data=this
+                
+            .ui.header 
+                i.shield.icon
+                |footer 
+            .ui.inline.header 
+                i.users.icon
+                |#{user_docs.count} users
+            each user_docs 
+                // +user_pill
+                a.ui.large.image.basic.inverted.label(href="/user/#{username}")
+                    img.ui.avatar.image(src="{{c.url image_id width=300 height=300 crop='fit'}}")
+                    |#{username}
+            .ui.inline.header 
+                i.database.icon
+                |#{doc_docs.count} docs 
+            each doc_docs
+                +doc_pill
+            
+            
+template(name='doc_pill')
+    a.ui.large.basic.label.fly_right(href="/d/#{model}/#{_id}" title=model)
+        if image_id
+            img.ui.avatar.image(src="{{c.url image_id crop='fit'}}")
+        |#{title}
+        span(title='model') (#{model})
+        
+        
+template(name='gchat')
+    iframe.invert(width='100%' height='800px' src="https://chat.gratigen.one" frameborder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowfullscreen='')
+    
+    
+template(name='coin')
+    iframe.invert(width='100%' height='800px' src="https://coin.gratigen.one" frameborder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowfullscreen='')

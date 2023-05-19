@@ -1,0 +1,478 @@
+template(name='nav')
+    .topnav.ui.borderless.attached.menu.hscroll(class=darkmode_class)
+        // .four.wide.column
+        a.item.zoomer(href='/' class="{{isActivePath '/'}}" )
+            if is_loading
+                    i.big.loading.grey.refresh.icon.cancel
+            else 
+                img.ui.mini.inline.compact.image(src="/logo.png")
+            span.mobile.hidden
+                | Gratigen
+        if currentUser.admin
+            // +nav_item route='admin' icon='shield' color='FFFFFF' label='admin'
+            a.icon.item.toggle_admin_mode(title='toggle admin mode' class=admin_mode_class)
+                i.large.shield.icon
+        // .six.wide.center.aligned.column
+        a.item.launch_modal.add_doc(title='Engage')
+            +i name='play-button-circled--v1' color='40C057' cl='ui mini image'
+        a.item(href='/users' title='users')
+            i.users.large.icon
+        a.icon.item.toggle_invert
+            i.lightbulb.large.icon
+        a.icon.item.toggle_searchbar
+            i.search.large.icon
+        .right.menu
+            if currentUser
+                a.icon.item.toggle_online
+                    if currentUser.online 
+                        i.green.checkmark.large.icon
+                    else 
+                        i.slash.eye.outline.large.icon
+                // if unread_messages.count
+                //     a.ui.item.alerts.select_term(href="#" class=alert_toggle_class)
+                //         i.large.bell.small.yellow.icon
+                // else
+                //     a.ui.icon.item(href="/inbox" class="{{isActiveRoute 'inbox'}}")
+                //         i.large.outline.bell.big.blue.icon
+            // a.ui.item.zoomer.toggle_rightbar(href="/chat" class="{{isActiveRoute 'chat'}}")
+            if currentUser
+                a.ui.item.zoomer.launch(title='launch chat')
+                    i.large.chat.outline.orange.icon
+                a.ui.item.zoomer(href="/p/gchat")
+                    +i name='chat' cl='ui mini inline image'
+            // a.ui.item.zoomer.toggle_chatbar
+            //     if unread_count
+            //         i.small.chat.big.blue.icon.pulse
+            //         |#{unread_count}
+            //     else
+            //         i.small.chat.outline.big.blue.icon
+            //     // +i name='chat' color='blue'
+
+            if currentUser
+                // a.ui.item(href='/user/#{currentUser.username}/credit' class="{{isActiveRoute 'user_credit'}}" title='current wallet balance')
+                // a.ui.item(href="/user/#{currentUser.username}/credit" class="{{isActiveRoute regex='user_credit'}}" title='your credits')
+                a.ui.item(href="/p/coin" class="{{isActiveRoute regex='user_credit'}}" title='your credits')
+                    strong
+                        |&nbsp;
+                        |#{currentUser.points}p
+                a.ui.item(href="/user/#{currentUser.username}" class=user_nav_button_class title=user_nav_button_title)
+                    if currentUser.image_id
+                        img.ui.avatar.image(src="{{c.url currentUser.image_id width=200 height=200 gravity='face' crop='fill'}}")
+                    else
+                        i.user.icon
+                    strong #{currentUser.name}
+                // a.icon.item.toggle_rightbar.no_blink
+                //     // .ui.avatar.image
+                //     //     if currentUser.image_id
+                //     //         img.ui.mini.inline.image(src="{{c.url currentUser.image_id width=200 height=200 gravity='face' crop='fill'}}")
+                //     //     else
+                //     //         i.user.large.icon
+                //     // strong.mobile.hidden #{currentUser.name}
+                //     i.bars.large.grey.icon
+            unless subs_ready
+                i.yin.yang.large.loading.icon
+            unless currentUser
+                a.ui.item(href="/register" title='register')
+                    +i name='plus' cl='ui inline mini image'
+                    // i.user.add.green.big.icon
+                    span.mobile.hidde register            
+                a.ui.item(href='/login' title='login') 
+                    // i.user.add.icon
+                    // i.sign.in.big.blue.icon
+                    +i name='internal' cl='ui inline mini image'
+                    span.mobile.hidde login
+            // if session_is 'viewing_alerts'
+            //     +topbar
+    // if currentUser.admin_mode 
+    //     .ui.attached.menu
+    //         .item 
+    //             i.shield.icon
+    //             |admin menu
+    //         +top_nav_item route='bank' label='bank' icon='bank' color='1255B8'
+    //         +top_nav_item route='icons' label='icons' icon='template' color='1255B8'
+    //         a.item.new_doc 
+    //             i.plus.icon
+    //         a.item(href='/tasks' title='tasks')
+    //             i.tasks.large.icon
+        //accounts gold-bars
+
+    // if session_is 'addmode' true
+
+
+template(name='nav_search')
+    .ui.left.icon.large.input
+        if current_site_search
+            i.remove.large.red.link.icon.clear_search
+        else
+            i.search.large.grey.icon
+        input.search_site(type='text' autocomplete="off" value=current_site_search placeholder='search docs/users...')
+    each picked_tags
+        .ui.label
+            i.remove.icon
+            |#{this}
+    each user_search_results
+        button.ui.button.goto_doc
+            if image_id
+                img.ui.avatar.image(src="{{c.url image_id width=200 height=200 gravity='face' crop='fill'}}")
+            |#{username}
+    each doc_search_results
+        button.ui.button.goto_doc(title=model)
+            if image_id
+                img.ui.avatar.image(src="{{c.url image_id width=200 height=200 gravity='face' crop='fill'}}")
+            |{{cut title}}
+
+
+
+template(name='search')
+    with search_results 
+        .ui.label
+            i.remove.icon
+            |#{title}
+
+
+template(name='add_doc')
+    // div
+    // .ui.header add doc #{currentUser._doc_id}
+    with current_doc 
+        .ui.padded.centered.grid 
+            .four.wide.column
+            .eight.wide.center.aligned.column
+                +text_field key='title' label='title'
+                +thing_picker model='post' icon='for-you' color='1255B8'
+                .ui.huge.popup 
+                    +i name='blog' color='1255B8'
+                    |create post
+                //blue
+                +thing_picker model='offer' icon='hand-holding-heart' color='FF73EA'
+                .ui.huge.popup create offer
+                //pink
+                +thing_picker model='request' icon='commercial' color='40C057' 
+                .ui.huge.popup create request
+                //green
+                // div
+                +thing_picker model='org' icon='building' color='83DFF4' 
+                .ui.huge.popup create organization
+                
+                +thing_picker model='group' icon='groups' color='ffd000' 
+                .ui.huge.popup create group                
+                
+                //light blue
+                +thing_picker model='project' icon='project' color='7229AF' 
+                .ui.huge.popup create project
+                //violet
+                +thing_picker model='event' icon='calendar' color='FAB005'
+                .ui.huge.popup create event
+                //yellow
+                +thing_picker model='role' icon='what-i-do' color='42E8C4'
+                .ui.huge.popup create role
+                //turquoise
+                +thing_picker model='tasks' icon='task' color='B785E1'
+                .ui.huge.popup create task
+                //lavender
+                +thing_picker model='resource' icon='field-and-tractor' color='FD7E14'
+                .ui.huge.popup create resource
+                +thing_picker model='skill' icon='wrench' color='ff0000'
+                .ui.huge.popup create skill
+                //red
+                +thing_picker model='badge' icon='badge' color='1255B8'
+                .ui.huge.popup create badge
+                //blue
+                // div
+                // +thing_picker model='datetime' icon='overtime--v1' color='FD7E14'
+                // .ui.huge.popup create 
+                +thing_picker model='location' icon='worldwide-location' color='40C057'
+                .ui.huge.popup create location
+                +thing_picker model='accounts' icon='gold-bars' color='FAB005'
+                div
+                .ui.huge.popup create transfer
+                .ui.big.green.circular.button.save_doc 
+                    i.large.save.icon
+                    |save #{model}
+                //people
+                // +youtube_id
+                // +youtube_field
+                +textarea_field key='body' label='body'
+                div
+                // +Template.dynamic template=doc_view_template
+                +link_field
+                +image_field key='image_id' label='image' icon='image'
+                
+                +youtube_field key='youtube_id' label='youtube id'
+                div
+                
+                // if currentUser.editing 
+                // .column
+                //     if watson 
+                //         +watson_view
+                +array_field key='tags' label='#'
+                // +image_field key='image_id' label='image'
+                // +thing_picker model='post' icon='for-you' color='1255B8'
+                // .ui.huge.popup 
+                //     +i name='blog' color='1255B8'
+                //     |create post
+                // //blue
+                // +thing_picker model='offer' icon='hand-holding-heart' color='FF73EA'
+                // .ui.huge.popup create offer
+                // //pink
+                // +thing_picker model='request' icon='commercial' color='40C057' 
+                // .ui.huge.popup create request
+                // //green
+                // // div
+                
+                // +thing_picker model='org' icon='groups' color='83DFF4' 
+                // .ui.huge.popup create organization
+                // //light blue
+                // +thing_picker model='project' icon='project' color='7229AF' 
+                // .ui.huge.popup create project
+                // //violet
+                // +thing_picker model='event' icon='calendar' color='FAB005'
+                // .ui.huge.popup create event
+                // //yellow
+                // +thing_picker model='role' icon='what-i-do' color='42E8C4'
+                // .ui.huge.popup create role
+                // //turquoise
+                // +thing_picker model='tasks' icon='task' color='B785E1'
+                // .ui.huge.popup create task
+                // //lavender
+                // +thing_picker model='resource' icon='field-and-tractor' color='FD7E14'
+                // .ui.huge.popup create resource
+                // +thing_picker model='skill' icon='wrench' color='ff0000'
+                // .ui.huge.popup create skill
+                // //red
+                // +thing_picker model='badge' icon='badge' color='1255B8'
+                // .ui.huge.popup create badge
+                // //blue
+                // // div
+                // // +thing_picker model='datetime' icon='overtime--v1' color='FD7E14'
+                // // .ui.huge.popup create 
+                // +thing_picker model='location' icon='worldwide-location' color='40C057'
+                // .ui.huge.popup create location
+                // +thing_picker model='accounts' icon='gold-bars' color='FAB005'
+                // .ui.huge.popup create transfer
+                // //people
+                // .ui.big.green.circular.button.save_doc 
+                //     i.large.save.icon
+                //     |save #{model}
+                // with current_doc 
+                //     +Template.dynamic template=model_edit_template
+            .four.wide.column
+
+    
+template(name='add_tab')
+    // .ui.top.attached.tabular.menu  
+    a.center.toggle_addmode.zoomer.pointer(data-tab='add')
+        +i name='play-button-circled--v1' color='40C057'
+        // i.small.circular.play.green.icon.invert
+        .ui.huge.popup Engage
+    // .active.item(data-tab='viewing')
+    //     |viewing
+    // .ui.bottom.attached.tab.segment.centered.ani(data-tab='add')
+    //select type of thing you're creating >> open thing type editor modal
+    // if session_is 'addmode' true
+    //     div
+    //     .ui.segment
+    //         +thing_picker model='post' icon='for-you' color='1255B8'
+    //         //blue
+    //         +thing_picker model='offer' icon='hand-holding-heart' color='FF73EA'
+    //         //pink
+    //         +thing_picker model='request' icon='commercial' color='40C057'     
+    //         //green
+            
+    //         div
+    //         +thing_picker model='org' icon='groups' color='83DFF4' 
+    //         //light blue
+    //         +thing_picker model='project' icon='project' color='7229AF' 
+    //         //violet
+    //         +thing_picker model='event' icon='calendar' color='FAB005'
+    //         //yellow
+    //         +thing_picker model='role' icon='what-i-do' color='42E8C4'
+    //         //turquoise
+    //         +thing_picker model='tasks' icon='task' color='B785E1'
+    //         //lavender
+    //         +thing_picker model='resource' icon='field-and-tractor' color='FD7E14'
+    //         +thing_picker model='skills' icon='wrench' color='ff0000'
+    //         //red
+    //         +thing_picker model='badges' icon='badge' color='1255B8'
+    //         //blue
+    //         div
+    //         +thing_picker model='datetime' icon='overtime--v1' color='FD7E14'
+    //         +thing_picker model='location' icon='worldwide-location' color='40C057'
+    //         +thing_picker model='accounts' icon='gold-bars' color='FAB005'
+    //             //people
+    //         .ui.divider
+     //side scrolling users' avatars (pulls  up profile in modal) - new, nearby, recommended - 
+        //.ui.fluid.big.menu.hscroll
+        +
+        //+new_nearby_allied_users
+    
+    div
+    
+    
+                
+                
+template(name='secnav')
+    .ui.attached.small.borderless.inverted.menu.hscroll(class=darkmode_class)
+        a.ui.button.zoomer(href="/resources" class="{{isActiveRoute 'resources'}}")
+            // i.large.inbox.icon
+            +i name='clock'
+            span.mobile.hidden resources
+        // a.icon.item.zoomer(href="/products" class="{{isActiveRoute 'products'}}")
+        //     // i.large.inbox.icon
+        //     +i name='shop'
+        //     span.mobile.hidden products
+        a.icon.item.zoomer(href="/transfers" class="{{isActiveRoute 'transfers'}}")
+            // i.large.inbox.icon
+            +i name='exchange'
+            span.mobile.hidden transfers
+        a.icon.item.zoomer(href="/posts" class="{{isActiveRoute 'posts'}}")
+            // i.large.inbox.icon
+            +i name='blog'
+            span.mobile.hidden posts
+        +nav_item route='roles' icon='shield' label='tasks'
+        // a.icon.disabled.item.zoomer(href="/map" class="{{isActiveRoute 'map'}}")
+        //     // i.large.inbox.icon
+        //     +i name='map'
+        //     span.mobile.hidden map
+        +nav_item route='tasks' icon='tasks' label='tasks'
+        +nav_item route='events' icon='calendar' label='events'
+        +nav_item route='orgs' icon='campfire' label='groups'
+        +nav_item route='services' icon='wrench' label='services'
+        +nav_item route='projects' icon='project' label='projects'
+        +nav_item route='requests' icon='hand-holding-heart' label='requests'
+        +nav_item route='badges' icon='prize' label='badges'
+
+                 
+template(name='nav_item')
+    a.item.zoomer(href="/{{route}}" class="{{isActiveRoute route }}")
+        // i.large.icon(class=icon)
+        +i name=icon color=color cl='ui avatar image'
+        // |&nbsp;
+        // |&nbsp;
+        span #{label}
+
+                 
+template(name='top_nav_item')
+    a.item.zoomer.mobile.hidden(href="/{{route}}" class="{{isActiveRoute route }}")
+        // i.large.icon(class=icon)
+        +i name=icon color=color cl='ui mini inline image'
+        // |&nbsp;
+        |&nbsp;
+        span #{label}
+
+                 
+                    
+template(name='topbar')
+    .ui.fluid.large.attached.segment.topbar
+        .ui.middle.aligned.divided.list
+            each recent_alerts
+                +recent_alert
+        a.ui.icon.attached.basic.button.item.close_topbar(href="/inbox")
+            i.inbox.large.icon
+            |inbox
+        
+template(name='recent_alert')        
+    .item.alert
+        .right.floated.content
+            i.circular.eye.link.large.icon.mark_read(title='mark read')
+        img.ui.avatar.image(src="{{c.url author.profile_image_id height=200 width=200 gravity='face' crop='fill'}}")
+        .content
+            .header
+                |#{description} 
+            .description #{author.name} #{made_when}
+                    
+template(name='chatbar')
+    .ui.right.push.sidebar.chatbar
+            // .ui.top.push.sidebar.chatbar
+            // .ui.left.push.sidebar.chatbar
+            // .ui.bottom.push.sidebar.chatbar
+        // +view_chats
+        +cometchat
+                    
+template(name='rightbar')
+    .ui.right.sidebar.vertical.small.borderless.menu.rightbar
+        with currentUser
+            a.item.toggle_rightbar.no_blink(href="/user/#{currentUser.username}" class="{{isActiveRoute 'user_layout'}}")
+                img.ui.avatar.compact.image(src="{{c.url currentUser.image_id height=200 width=200 gravity='face' crop='fill'}}")
+                |#{currentUser.name}
+            a.item.toggle_rightbar(href="/user/#{username}" class="{{isActiveRoute regex='user_dashboard'}}")
+                +i name='dashboard'
+                // i.dashboard.icon
+                |dashboard
+            a.item.zoomer.toggle_darkmode
+                if darkmode
+                    +i name='checkmark'
+                else
+                    +i name='light'
+                |dark mode
+            +nav_item route='my_accounts' label='accounts' icon='data-in-both-directions' color='40C057'
+            +nav_item route='my_organizations' icon='groups' color='83DFF4' label='organizations'
+            +nav_item route='my_projects' icon='project' color='7229AF' label='projects'
+            +nav_item route='my_events' icon='calendar' color='FAB005' label='events'
+            +nav_item route='my_roles' icon='what-i-do' color='42E8C4' label='roles'
+            +nav_item route='my_tasks' icon='task' color='B785E1' label='tasks'
+            +nav_item route='my_resources' icon='car' color='FD7E14' label='resources'
+            +nav_item route='my_skills' icon='wrench' color='ff0000' label='skills'
+            +nav_item route='my_badges' label='badges' icon='badge' color='1255B8'
+                
+            +right_nav_item route='credit' label='credit' icon='money'
+            +right_nav_item route='orders' label='orders' icon='check'
+            +right_nav_item route='subscriptions' label='subscriptions' icon='check'
+            +right_nav_item route='friends' label='friends' icon='friends'
+            // a.item.toggle_rightbar(href="/user/#{username}/pantry" class="{{isActiveRoute 'user_pantry'}}")
+            //     +i name='cupboard' cl='ui avatar image'
+            //     |pantry
+            +right_nav_item route='cart' label='cart' icon='shopping-cart'
+            // a.item.toggle_rightbar(href="/work" class="{{isActiveRoute 'work'}}")
+            //     +i name='trust' cl='ui avatar image'
+            //     |work
+            // a.item.toggle_rightbar(href="/user/#{username}/trips" class="{{isActiveRoute 'user_trips'}}")
+            //     +i name='bicycle' cl='ui avatar image'
+            //     |trips
+            a.item.toggle_rightbar(href="/user/#{currentUser._id}/edit" class="{{isActiveRoute 'user_trips'}}")
+                +i name='settings' 
+                |account
+            // .ui.divider
+            a.item.logout
+                if is_logging_out
+                    i.refresh.loading.large.icon
+                else
+                    +i name='exit-sign' cl='ui avatar image'
+                    // i.sign.out.icon
+                |logout
+        else 
+            a.item.toggle_rightbar(href="/login" class="{{isActiveRoute 'login'}}")
+                +i name='internal' cl='ui avatar image'
+                |login
+            a.item.toggle_rightbar(href="/register" class="{{isActiveRoute 'register'}}")
+                +i name='plus' cl='ui avatar image'
+                |register
+
+
+
+template(name='right_nav_item')
+    a.item.toggle_rightbar(href="/user/#{currentUser.username}/#{route}" class="{{isActiveRoute regex='user_dashboard'}}")
+        // +i name=icon cl='ui avatar image'
+        i.large.icon(class=icon)
+        |#{label}
+
+
+template(name='leftbar')
+    .ui.left.thin.sidebar.ui.vertical.borderless.menu
+        +leftbar_item key='posts' icon='newspaper'
+        +leftbar_item key='products' icon='shop'
+        +leftbar_item key='food' icon='food'
+        +leftbar_item key='music' icon='music'
+        +leftbar_item key='transfers' icon='exchange'
+        +leftbar_item key='orders' icon='history'
+        +leftbar_item key='groups' icon='fire'
+        +leftbar_item key='requests' icon='hand holding heart'
+        +leftbar_item key='services' icon='wrench'
+        +leftbar_item key='rentals' icon='clock'
+        +leftbar_item key='users' icon='users'
+            
+template(name='leftbar_item')    
+    a.item.zoomer.fly_right.toggle_leftbar(href="/#{key}")
+        i.large.icon(class=icon)
+        // +i name=icon
+        span #{key}
+                

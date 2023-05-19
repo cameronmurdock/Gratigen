@@ -1,0 +1,258 @@
+template(name='group_crud')
+    // .ui.segment
+    .ui.styled.accordion
+        .title
+            .dropdown.icon
+            .ui.inline.header
+                // +i name='shield'
+                // |#{picked_groups.count}
+                | groups
+        .content
+            .ui.icon.large.input 
+                if group_search_value
+                    i.large.red.remove.link.icon.zoomer.clear_search
+                else 
+                    i.search.icon
+                input.group_search(type='text' placeholder='search' value=group_search_value)
+            if group_results
+                // .ui.selection.link.animated.list
+                each group_results
+                    .ui.basic.circular.large.button.pick_group.zoomer
+                        i.grey.plus.icon
+                        if image_id
+                            img.ui.avatar.image(src="{{c.url image_id width=300 height=300 gravity='face' crop='fill'}}")
+                        |#{title}
+            if group_search_value
+                .ui.large.button.create_group(title='add')
+                    i.plus.icon
+                    |#{group_search_value}
+            // if picked_groups
+            .ui.header 
+                |#{picked_groups.count}
+                |groups
+            .smallscroll
+                each picked_groups
+                     .ui.horizontal.fluid.card.show_modal
+                        .content
+                            .ui.grid
+                                .row
+                                    // .column
+                                    .fourteen.wide.column
+                                        .left.floated
+                                            a.ui.inline.header
+                                                |!{title}
+                                            div
+                                            +eft_viewer_small
+                                            // img(src="{{c.url image_id width=50 height=50}}")
+                                            // div    
+                                            // |!{content}
+                                    .two.wide.column
+                                        .right.floated
+                                            if _is 'model' 'group'
+                                                +ismall name='what-i-do' color='42E8C4' cl='ui inline image'
+                                            div
+                                            |#{when}
+                                .row
+                                    .six.wide.column
+                                        img.invert(src="{{c.url image_id width=10 height=10}}")
+                                    .ten.wide.column
+                                        |!{content}
+                                .sixteen.wide.column
+                                    if currentUser.admin_mode
+                                        .ui.tertiary.large.button.zoomer.remove_group 
+                                            i.remove.icon
+                                            |remove 
+                                        .ui.tertiary.large.button.zoomer.toggle_assign 
+                                            i.user.plus.icon
+                                            | assign
+                                        if assigned_to 
+                                            |assigned to #{asigned_to.username}
+                                        else 
+                                            |unnassigned
+                                        if is_assigning 
+                                            each group_holders 
+                                                .ui.label #{username}
+                                        else 
+                                            with assigned_users
+                                                .ui.green.label #{username}
+                                        a.ui.tertiary.right.floated.icon.large.button.zoomer.fly_right(href="/group/#{_id}/edit" title='edit group')
+                                            i.setting.icon
+                                    else
+                                        // else if can_take
+                                        if has_taken 
+                                            |taken by #{taken_user.name}
+                                            .ui.large.button.release_group
+                                                i.undo.icon
+                                                |release 
+                                        else if can_take
+                                            .ui.tertiary.large.button.zoomer.take_group 
+                                                i.checkmark.icon
+                                                | take
+                                        else if is_taken 
+                                            |taken by #{taken_user.name}
+                                    a.ui.tertiary.large.button.zoomer(href="/d/group/#{_id}")
+                                        |view
+                                        i.chevron.right.icon
+                    .ui.modal 
+                        .ui.header hi
+                        
+                        
+template(name='group_view')
+    // if currentUser.admin_mode 
+    //     +org_edit
+    .ui.stackable.padded.grid.scrolling
+        .row
+            .four.wide.column
+                +image_field key='image_id' icon='image' label='image'
+                // +image_field key='banner_image_id' icon='image' label='banner image'
+                +array_field key='tags' icon='tags'
+                if currentUser.editing
+                    +title_link_buttons
+                .spacer
+                +icon_field
+                if link
+                    a.ui.basic.circular.button(href=link target='_window')
+                        i.external.icon
+                        |view site
+                    .spacer
+                div
+                .spacer
+                if address
+                    a.ui.compact.basic.circular.button(href=address_link target='_window')
+                        i.marker.icon
+                        |#{address}
+                +textarea_field key='purpose' tagline="what is the basic purpose of your organization? what principals does it serve?"
+                +textarea_field key='vision' label='vision' tagline="how will your organization impact society? how will it look for people?"
+                +textarea_field key='mission' tagline='your business goals and the values you will embrace to achieve them'
+                +textarea_field key='bylaws' tagline='bylaws of your organization. Articles of incorporation are the primary law of an association used to establish the general organization and governing of the association to achieve corporate existence. Bylaws are the secondary law of an association best used to detail how the society is formed and run.'
+                +textarea_field key='signature' tagline='creators signature'
+                // +viewing
+                // // block template to make everything lazy loading with passed subtemplate
+                // +block template='org_history' label='activity'
+                // +block template='org_subscription' label='subscriptions'
+                // +multi_user_view key='member_ids' label='members' 
+                // +org_history
+                // +org_subscription
+            .eight.wide.centered.column
+                // +block template='link_field' key='link' label='link'
+                +link_field key='link' label='link'
+                // if link
+                //     iframe.invert(width='100%' height='500px' src=link frameborder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowfullscreen='')
+            
+                .centered.row
+                    // datetime saves in datetime format like: 2023-03-22T19:39
+                    // need to use moment helper to format, helpers.coffee 
+                    // .ui.medium.header {{long start_time}} #{date}
+                    // if currentUser.editing 
+                    //     +datetime_field key='start_time'
+                    // +text_field
+                    div
+                    +eft_viewer
+                .ui.header Spaceholders
+                // .ui.centered
+                        +single_user_field key='lead' label='lead'
+                .ui.center.aligned.grid
+                    .four.wide.column 
+                        .ui.small.centered.header Lead
+                        div
+                        +single_user_field key='lead'
+                    .four.wide.column
+                        .ui.small.centered.header Support
+                        div
+                        // .ui.centered
+                        +single_user_field key='support'
+                    .four.wide.column
+                        .ui.small.centered.header Safety
+                        div
+                        // .ui.centered
+                        +single_user_field key='safety'
+                    .four.wide.column
+                        .ui.small.centered.header Creator
+                        div
+                        // .ui.centered
+                        +single_user_field key='creator'
+                // +textarea_field key='brief' tagline='what kink of organization is this? breifly describe it.'
+                // +textarea_field key='description' tagline='complete description of your organization'
+                +link_field key='link' label='link'
+                +textarea_field key='body' tagline='body'
+
+                .ui.animated.fade.tertiary.circular.large.center.alligned.zoomer.button.launch_modal.add_doc(style="color:green")
+                    .visible.content
+                        // i.big.green.play.dark-mode.icon(class=gicon)
+                        +ilarge name='play-button-circled--v1' color='40C057' cl='ui image'
+
+                    .hidden.content
+                        .ui.massive.header Engage
+                .centered   
+    
+                    +smaba
+                    div
+                    +session_set key='view_mode' value='grid' icon='th' 
+                    +session_set key='view_mode' value='list' icon='list'
+                    +session_set key='view_mode' value='feed' icon='stream'
+                    +session_toggle key='show_map' icon='map'
+                    +session_toggle key='show_calendar' icon='calendar'
+                    .ui.button.view_latest(class=view_latest_class)
+                        i.clock.icon 
+                        |latest
+                    .ui.button.view_bookmarks(class=viewing_bookmarks)
+                        i.bookmark.icon 
+                        |bookmarks
+                div
+                // +smaba
+
+                // +block template='model_crud' model='post' title='posts' icon='for-you' color='1255B8'
+                +block template='model_crud' model='group' title='groups' icon='groups' color='83DFF4'
+                // +block template='model_crud' model='resource' title='resources' icon='field-and-tractor' color='FD7E14'
+                // +block template='model_crud' model='project' title='project' icon='project' color='7229AF'
+                // +block template='model_crud' model='event' title='events' icon='calendar' color='FAB005'
+                // +block template='model_crud' model='badge' title='badges' icon='badge' color='blue'
+                +block template='model_crud' model='role' title='roles' icon='what-i-do' color='42E8C4'
+                +block template='model_crud' model='task' title='tasks' icon='task' color='B785E1'
+                // +block template='model_crud' model='shift' title='shifts' icon='shift' color='teal'
+                // +block template='model_crud' model='skill' title='skills' icon='wrench' color='ff0000'
+                // div
+                // +block template='model_crud' model='request' title='requests' color='40C057' icon='commercial'
+                // +block template='model_crud' model='offer' title='offers' icon='hand-holding-heart' color='FF73EA'
+                // +block template='model_crud' model='product' title='products' icon='shop' color='40C057'
+                // +block template='model_crud' model='service' title='services' icon='service' color='FF73EA'
+                // +block template='model_crud' model='objective' title='objectives' color='teal'
+                // +block template='model_crud' model='keyresult' title='key results' color='orange'
+
+                // a.item(href="/d/org/#{_id}/#{username}")
+                //     img.ui.mini.image(src="{{c.url image_id width=200 height=200}}")
+                //     .content
+                //         .header
+                //             |#{username}
+            .four.wide.column
+                +membership_toggle
+                +block template='members'
+                // +block template='ai' name='blockchain'
+                +block template='comments' label='comments' icon='chat' color='blue' data=this
+                +block template='checklist'
+                +block template='gchat'
+                +block template='model_crud' model='event' title='events' icon='calendar' color='FAB005'
+
+
+                        // +user_pill
+                if currentUser.editing
+                    .ui.basic.center.aligned.segment
+                        +eft_picker color="FF73EA" icon='food' label='food'
+                        +eft_picker color="B785E1" icon='home' label='housing'
+                        +eft_picker color="6b0fb9" icon='tshirt' label='clothing'
+                        +eft_picker color="0000f7" icon='smile' label='wellness'
+                        +eft_picker color="00ddff" icon='car' label='travel'
+                        +eft_picker color="00ffc3" icon='dog' label='animals'
+                        +eft_picker color="148023" icon='leaf' label='plants'
+                        +eft_picker color="35ca2d" icon='recycle' label='regen'
+                        +eft_picker color="ffff00" icon='lightning' label='energy'
+                        +eft_picker color="ffd000" icon='paint brush' label='art'
+                        +eft_picker color="ff6f00" icon='university' label='education'
+                        +eft_picker color="FF0000" icon='users' label='community'
+                        +eft_picker color="000000" icon='ambulance' label='emergency'
+                +block template='gratigen'
+                // .ui.header 
+                // +block template='latest_updated_block' title='latest' icon='time-machine' color='blue'
+                // each log_items
+                //     +log_item
+                // +block template='org_stats' title='stats' icon='line chart'

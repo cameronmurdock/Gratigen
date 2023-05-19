@@ -1,0 +1,1250 @@
+template(name='viewing_info')
+    .ui.header 
+        +i name='eye'
+        |viewing info
+    .ui.small.header 
+        |viewers
+    .ui.list 
+        each read_user_ids
+            +user_pill
+            // img.ui.avatar.image(src="{{c.url image_id width=300 height=300 gravity='face' crop='fill'}}")
+    .ui.small.header 
+        |#{views} views
+    .ui.small.header 
+        |last user viewed: {{med_date last_user_viewed_timestamp}}
+        |last user viewed
+    .ui.small.header 
+        |last anon viewed: {{med_date last_anon_viewed_timestamp}}
+
+template(name='give_button')
+    if currentUser.admin_mode
+        .ui.button.mint
+            |mint
+    .ui.button.give 
+        |give 1
+    each doc_coins 
+        |#{_author_username}
+
+template(name='gratigen')
+    .ui.large.header Give a Gift of Gratitude
+    // .ui.input
+    
+
+    // .ui.input
+    .ui.header Give Gratitude Points
+    .ui.large.circular.basic.button
+        i.pink.praying.hands.icon 
+        |Give Gratitude Points
+    .ui.header Give Reserve Token
+    .ui.large.circular.basic.button.give_token
+        i.purple.infinity.icon 
+        |Give Token
+    .ui.small.header.recalc_credit your credit #{currentUser.coin_count}
+    .ui.header Give an item
+    |service, product, resource
+    .ui.large.circular.basic.button
+        i.green.hands.icon
+        |give item
+    .ui.header Give time
+    |badge, skill, task, role, resource
+    .ui.large.circular.basic.button
+        i.blue.clock.icon 
+        |give time
+    .ui.header Incentivize an action
+    |task, role, resource
+    .ui.large.circular.basic.button
+        i.orange.carrot.icon 
+        |Incetivize Action
+
+    .ui.header Give Money
+    .ui.large.circular.basic.button
+        i.green.money.icon 
+        |Give Money
+    // +give_money
+    // .ui.inline.input
+    //     imput(type='number')
+
+
+template(name='alerts')
+    .ui.button.check_notifications
+        |check alerts 
+    .ui.button.send_notification
+        |send alert
+
+
+template(name='parent_block')
+    each parent_ids 
+        // .ui.label #{this}
+        with doc_by_id 
+            a.ui.tertiary.basic.button.fly_down(href="/d/#{model}/#{_id}" title=model)
+                img.ui.mini.rounded.inline.image(src="{{c.url image_id width=200 height=200 gravity='face' crop='fill'}}")
+                |#{title}
+                +model_icon
+        // .ui.label #{this}
+    with doc_by_id parent_id
+        a.ui.tertiary.basic.button.fly_down(href="/d/#{model}/#{_id}" title=model)
+            img.ui.mini.rounded.inline.image(src="{{c.url image_id width=200 height=200 gravity='face' crop='fill'}}")
+            |#{title}
+            +model_icon
+            
+            
+template(name='parent_avatar')
+    each parent_ids 
+        // .ui.label #{this}
+        with doc_by_id 
+            a.ui.tertiary.basic.button.fly_down(href="/d/#{model}/#{_id}" title=model)
+                img.ui.mini.rounded.inline.image(src="{{c.url image_id width=200 height=200 gravity='face' crop='fill'}}")
+                // |#{title}
+                // +model_icon
+        // .ui.label #{this}
+    with doc_by_id parent_id
+        a.ui.tertiary.basic.button.fly_down(href="/d/#{model}/#{_id}" title=model)
+            img.ui.mini.rounded.inline.image(src="{{c.url image_id width=200 height=200 gravity='face' crop='fill'}}")
+            // |#{title}
+            // +model_icon
+
+
+template(name='give_money')
+    .ui.button.give_money
+        +i name='money'
+        |give money
+    .ui.header total gift amount: #{total_gift_amount}
+    .ui.header your $ credit: #{currentUser.dollar_credit_current}
+    // need to hook this up to stripe
+    .ui.button.add_dollar_credit
+        |add $ credit
+    
+    .ui.small.header gifts
+    .ui.list
+        each money_gift_docs
+            +money_gift_item
+    +my_wallet
+    
+template(name='give_gratitude_points')
+    .ui.button.give_gratitude_points
+        +i name='heart'
+        |Give Gratitude Points
+    .ui.header total gift ammount: #{total_gift_ammount}
+    .ui.header your gratitude points: #{currentUser.gratitude_point_ammount}
+
+    
+    
+template(name='my_wallet')
+    .ui.segment
+        .f12 
+            +i name='wallet'
+            |your wallet
+        .f12 
+            |your deposits
+        .ui.list 
+            each model_docs_helper 'deposit'
+                .item
+                    |#{amount}
+                    +creation_info
+                    +author_info
+        .f12
+            |your gifts
+        .ui.list 
+            each model_docs_helper 'gift' 
+                .item #{amount}
+                    +creation_info
+            
+template(name='money_gift_item')
+    .item
+        |$#{amount}
+        +author_info
+        +creation_info
+        if can_edit 
+            i.large.circular.link.undo.icon.refund_gift
+            
+
+
+
+template(name='live_button')
+    if is_subscribeed
+        i.big.bell.yellow.icon.zoomer.link.zoomer.toggle_subscribe(title='subscribe')
+    else 
+        i.big.bell.slash.link.icon.zoomer.toggle_subscribe(title='unsubscribe')
+template(name='subscribe_button')
+    if is_subscribeed
+        i.big.bell.yellow.icon.zoomer.link.zoomer.toggle_subscribe(title='subscribe')
+    else 
+        i.big.bell.slash.link.icon.zoomer.toggle_subscribe(title='unsubscribe')
+template(name='resonate_button')
+template(name='thanks_button')
+
+template(name='gift_button')
+    .ui.button.send_gift
+        |send gift
+
+
+template(name='session_key_value_edit')
+    .ui.button.set_key_value(class=set_key_value_class)
+        if key_value_is 'key' 'sort_key'
+            if session_is 'sort_key' value
+                if sorting_up
+                    i.sort.amount.down.icon
+                else
+                    i.sort.amount.up.icon
+        if icon 
+            +i name=icon cl='ui avatar image'
+            // i.icon(class=icon)
+        |#{label}
+
+
+
+
+template(name='session_icon_button')
+    .ui.icon.circular.button.set_session_value(class=session_icon_button_class)
+        +i name=icon
+
+template(name='sort_direction_toggle')
+    if session_is 'sort_direction' -1
+        .ui.icon.compact.circular.button.toggle(title='toggle sort direction')
+            i.sort.down.large.icon
+            // +i name='sort-down'
+    else
+        .ui.icon.compact.circular.button.toggle(title='toggle sort direction')
+            // +i name='sort-up'
+            i.sort.up.large.icon
+
+
+template(name='search_input')
+    .ui.input(class=search_input_class)
+        input.search_input(type='text' placeholder='search....')
+template(name='sort_direction_button')
+
+template(name='limit_menu')
+    .ui.inline.small.grey.header
+        |limit
+    .ui.compact.menu
+        .ui.simple.dropdown.item
+            strong #{current_limit}
+            i.dropdown.icon
+            .menu
+                +set_limit amount=1
+                +set_limit amount=5
+                +set_limit amount=10
+                +set_limit amount=20
+
+
+template(name='key_value_edit')
+    .ui.compact.button.set_key_value(class=calculated_class)
+        if icon 
+            // +i name=icon cl='ui avatar image'
+            i.large.icon(class=icon)
+        if label
+            |#{label}
+        else 
+            |#{value}
+            
+        
+        
+template(name='doc_array_togggle')
+    // if currentUser
+    .ui.button.toggle(class=doc_array_toggle_class title=label)
+        if in_list
+            if remove_icon
+                i.large.icon(class=remove_icon)
+            |#{remove_label}
+        else
+            if add_icon
+                i.large.icon(class=add_icon)
+            |#{add_label}
+        |#{label}
+    //- each list_users
+        //-     +user_pill
+        
+template(name='session_toggle') 
+    .ui.icon.large.circular.button.toggle_session_var.zoomer(class=session_toggle_class title=key)
+        i.large.icon(class=icon)
+        // if on
+        //     i.checkmark.icon
+        //     // |#{key}
+        // else    
+        //     // |#{key}
+        
+        
+        
+        
+template(name='bookmark_button')
+    if currentUser
+        // .ui.tertiary.icon.button.toggle_bookmark(class=bookmark_button_class title='add/remove bookmark')
+        if is_bookmarked
+            i.red.bookmark.big.link.icon.invert.zoomer.toggle_bookmark
+            // - i.large.icon(class=remove_icon)
+        else
+            i.big.bookmark.outline.link.icon.zoomer.toggle_bookmark
+            // - i.large.icon(class=add_icon)
+        each list_users
+            +user_pill
+
+template(name='comments')
+    if currentUser
+        .ui.fluid.icon.large.input
+            input.add_comment(type='text' placeholder='write a comment')
+    .ui.comments
+        each doc_comments
+            .comment.mark_viewed
+                a.avatar.pointer.zoomer.fly_right(href="/user/#{_author.username}") 
+                    img.ui.avatar.image.zoomer(src="{{c.url _author.image_id width=200 height=200 gravity='face' crop='fill'}}")
+                .ui.popup
+                    a.pointer.zoomer(href="/user/#{_author.username}") 
+                        img.ui.image.zoomer(src="{{c.url _author.image_id width=200 height=200 gravity='face' crop='fill'}}")
+                
+                .content
+                    a.author.zoomer(href="/user/#{_author.username}") 
+                        |#{_author.username}
+                    .text #{body}
+                    .metadata
+                        .date #{when}
+                        if currentUser
+                            +voting_small
+                            if currentUser.admin_mode
+                                +viewing_small
+                                +remove_button
+                    +replys
+
+template(name='replys')
+    if currentUser
+        .ui.fluid.icon.large.input
+            input.add_comment(type='text' placeholder='write a reply')
+    .ui.comments
+        each doc_comments
+            .comment.mark_viewed
+                a.avatar.pointer.zoomer.fly_right(href="/user/#{_author.username}") 
+                    img.ui.avatar.image.zoomer(src="{{c.url _author.image_id width=200 height=200 gravity='face' crop='fill'}}")
+                .ui.popup
+                    a.pointer.zoomer(href="/user/#{_author.username}") 
+                        img.ui.image.zoomer(src="{{c.url _author.image_id width=200 height=200 gravity='face' crop='fill'}}")
+                
+                .content
+                    a.author.zoomer(href="/user/#{_author.username}") 
+                        |#{_author.username}
+                    .text #{body}
+                    .metadata
+                        .date #{when}
+                        if currentUser
+                            +voting_small
+                            if currentUser.admin_mode
+                                +viewing_small
+                                +remove_button
+                                
+                                
+template(name='viewing_small')
+    i.grey.small.eye.icon
+    |#{views}
+    each viewers 
+        .ui.label #{username}
+                                
+                                
+template(name='reviews')
+    .ui.header
+        +i name='popular-topic' cl='ui inline image'
+        |reviews
+    div
+    // if currentUser
+    .ui.fluid.icon.large.input
+        i.plus.icon
+    .ui.reviews
+        each doc_reviews
+            .comment
+                .content
+                    .ui.header #{body}
+                    .meta #{when}
+                        |by 
+                        // a(href="/user/#{author.username}") #{author.first_name} #{author.last_name}
+                            // if currentUser
+                        +voting_small
+                        // if currentUser.admin_mode
+                        //     +remove_button
+
+
+template(name='viewing')
+    div
+    .ui.header #{views}
+    if currentUser
+        unless viewed_by
+            .ui.icon.tertiary.button.mark_read
+                // i.eye.icon
+        else 
+            if is_dev
+                .ui.icon.tertiary.button.mark_unread
+                    i.cancel.icon
+    .ui.inline.header views
+    each read_ids
+        +user_pill
+
+template(name='user_pill')
+    with user_from_id this
+        a.ui.large.link.basic.button.goto_user(href="/user/#{username}")
+            img.ui.avatar.inline.image(src="{{c.url image_id width=200 height=200 gravity='face' crop='fill'}}")
+            |#{username}
+        .ui.user.popup        
+            .ui.header #{username} #{name}
+            each roles
+                .ui.basic.label #{this}
+            img.ui.small.image(src="{{c.url image_id width=400 height=400 gravity='face' crop='fill'}}")
+
+
+template(name='session_boolean_toggle')
+    .ui.compact.button.toggle_session_key(class=calculated_class)
+        +i name=icon cl='ui avatar image'
+        |#{label}
+        //- if icon_view 
+        //- else 
+            if label
+                |#{label}
+            else 
+                |#{value}
+
+template(name='session_set')
+    .ui.compact.large.circular.button.set_session_value(class=calculated_class)
+        // if icon
+        //     +i name=icon cl='ui mini centered image'
+        // if icon_view 
+        i.icon(class=icon)
+        // else 
+        if label
+            |#{label}
+        else 
+            |#{value}
+                
+                
+                
+template(name='set_sort_key')
+    .ui.circular.button.set_sort(class=sort_button_class)
+        if color
+            .ui.label(class=color) #{label}
+        else 
+            if emoji
+                em(data-emoji=emoji)
+            else if icon
+                i.icon(class=icon)
+            |#{label}
+
+
+// template(name='set_sort_key')
+//     .item.set_sort
+//         if color
+//             .ui.label(class=color) #{label}
+//         else 
+//             if emoji
+//                 em(data-emoji=emoji)
+//             else if icon
+//                 i.icon(class=icon)
+//             |#{label}
+
+template(name='goto_model')
+    if is_staff
+        a.goto_model(href="/m/#{slug}" title="goto #{slug}")
+            i.external.blue.icon
+            //- +i name='external-link'
+
+template(name='events_column')
+    .ui.accordion
+        h4.active.title
+            // +i name='edit-property' cl='ui inline image'
+            //- i.rss.icon
+            | log
+            i.dropdown.icon
+        .active.content
+            .ui.feed
+                each log_events
+                    .event
+                        .label
+                            img.ui.rounded.image(src="{{c.url object.image width=400 height=400 gravity='face' crop='fill'}}")
+                        .content
+                            .summary
+                                |#{body}
+                                .date
+                                    |#{when}
+                                if is_dev
+                                    +remove_button
+
+
+
+
+template(name='follow')
+    .ui.segment
+        .ui.header
+            i.user.plus.icon
+            |follow
+        +user_list_toggle key='follower_ids' icon='rss' add_label='Follow' remove_label='Unfollow' color='black'
+
+
+template(name='toggle_edit')
+    .ui.button.toggle_edit
+        i.pencil.icon
+
+template(name='user_list_info')
+    a.ui.button.item(href="/user/#{user._id}/view")
+        img.ui.avatar.image(src=user.profile.profilePic title=name)
+        |#{user.profile.name}
+        +user_status user
+
+//- template(name='call_watson')
+//-     .ui.button.autotag
+//-         //- i.chess.icon
+//-         +ismall name='dna-helix'
+//-         |call watson
+
+template(name='view_full_button')
+    a.ui.icon.button(href="/view/#{_id}" class=cl data-tooltip='View Full')
+        i.double.icon
+        |view
+
+template(name='user_status')
+    if online 
+        // .ui.label(class='{{labelClass}}') 
+        .ui.green.label(title='online')
+            // img.ui.avatar.image(src="https://img.icons8.com/connection-user_status-on/color/48" title='Online' width="48" height="48")
+            |Online
+    else if idle
+        .ui.empty.yellow.label(title='idle')
+            |idle
+        // .ui.label(class='{{labelClass}}') Idle
+    // else 
+    //     |Offline
+
+// template(name='user_card')
+//     with user
+//         .ui.card
+//             //- if is_staff
+//             a.image(href="/user/#{username}")
+//                 img.ui.tiny.image(src="{{c.url image_id width=200 height=200 gravity='face' crop='fill'}}")
+//             .content    
+//                 .header 
+//                     a.header(href="/user/#{username}") #{name} 
+//                     .meta @#{username}
+//                     if is_admin
+//                         div
+//                         +user_email
+//                 //- +emails_edit    
+//         //- +user_status user
+
+
+template(name='user_email')
+    .ui.small.inline.header #{email_address}
+    if email_verified
+        .ui.label 
+            i.green.checkmark.icon
+            |verified
+    else
+        .ui.orange.label 
+            i.ban.icon
+            |unverified
+        
+
+template(name='big_user_card')
+    with user
+        //- .ui.card
+        //- .ui.card(class=resident_status_class)
+        .ui.card
+            .image
+                img.ui.rounded.image(src="{{c.url image_id width=300 height=300 gravity='face' crop='fill'}}")
+            .content
+                a.header(href="/user/#{username}")
+                     |#{first_name} #{last_name} 
+                    //- .meta @#{username}
+                    //- +array_field key='tags' label='Tags'
+            if is_staff
+                .content
+                    +array_field key='roles'
+                        
+template(name='user_button')
+    a.ui.compact.button(href="/user/#{user.username}/")
+        if user.kiosk_photo
+            img.ui.avatar.inline.image(src="{{c.url user.kiosk_photo width=300 height=300 gravity='face' crop='fill'}}")
+        else if user.image_id
+            img.ui.avatar.inline.image(src="{{c.url user.image_id width=300 height=100 gravity='face' crop='fill'}}")
+        //- .visible.content
+        |#{user.first_name} #{user.last_name}
+        //- |@#{user.username}
+        +user_status user
+        //- .hidden.content
+        //-     |view
+        //-     i.right.chevron.icon
+
+
+template(name='username_info')
+    .ui.small.compact.button.goto_profile
+        if is_member
+            img.ui.avatar.image(src="{{c.url user.image_id width=100}}")
+        else if user.kiosk_photo
+            img.ui.avatar.image(src="{{c.url user.kiosk_photo width=100}}")
+        else if user.image_id
+            img.ui.avatar.image(src="{{c.url user.image_id width=100}}")
+        |#{user.name}
+        //- |@#{user.username}
+        +user_status user
+
+
+template(name='role_editor')
+    each roles
+        .ui.button #{this}
+
+template(name='author_info')
+    with _author
+        a.ui.compact.basic.button(href="/user/#{username}")
+            if image_id
+                img.ui.avatar.image(src="{{c.url image_id width=150 height=150 gravity='face' crop='fill'}}")
+            |by #{first_name} #{last_name}
+    // |added #{when} by #{_author_username}
+
+template(name='creation_info')
+    .ui.small.inline.header(title="by #{_author.name}") #{when}
+    .ui.popup
+        .ui.header #{_author.name}
+        .ui.header #{points}
+
+template(name='user_list_toggle')
+    if currentUser
+        .ui.icon.compact.button.toggle(class=user_list_toggle_class title=label)
+            if in_list
+                i.large.icon(class=remove_icon)
+            else
+                i.large.icon(class=add_icon)
+            //- +ismall name=icon
+            //- |#{label}
+        //- each list_users
+        //-     +user_pill
+
+
+template(name='voting')
+    .ui.icon.circular.basic.button.upvote(title='upvote')
+        i.thumbs.up.icon(class=upvote_class)
+    //- each upvoter_ids
+    //-     +user_pill
+    .ui.icon.circular.basic.button.downvote(title='downvote')
+        i.thumbs.down.icon(class=downvote_class)
+    //- each downvoter_ids
+    //-     +user_pill
+    if points
+        strong #{points} pts
+    if anon_points
+        strong #{anon_points} anon pts
+    
+
+template(name='voting_small')
+    if points
+        strong #{points}
+    i.thumbs.up.link.icon.upvote(class=upvote_class)
+    //- each upvoter_ids
+    //-     +user_pill
+    i.thumbs.down.link.icon.downvote(class=downvote_class)
+    //- each downvoter_ids
+    //-     +user_pill
+
+template(name='grat_small')
+    .ui.icon.basic.circular.button.tip 
+        +i name='donate' cl='ui avatar image'
+        if points
+            |#{points}
+template(name='react_small')
+    +react_button key='joy' icon='smile'
+    +react_button key='sad' icon='sadness'
+    +react_button key='upvote' icon='thumbs-up'
+    +react_button key='downvote' icon='thumbs-down'
+
+template(name='react_button')
+    a.ui.basic.compact.circular.icon.button.react
+        +i name=icon
+        |#{reaction_amount}
+
+
+template(name='voting_full')
+    // +ismall name='elections'
+    // .ui.inline.header 
+    //     |voting
+    .ui.large.icon.compact.basic.button.upvote(title='upvote')
+        i.thumbs.up.outline.icon(class=upvote_class)
+        //- |like
+    .ui.large.icon.compact.basic.button.downvote(title='downvote')
+        i.thumbs.down.outline.icon(class=downvote_class)
+        //- |dislike
+    if points
+        .ui.large.basic.label(title='points') #{points}pts
+        if anon_points
+            .ui.large.label(title='anon points') #{anon_points} anon pts
+    if upvoter_ids
+        .ui.small.inline.grey.header 
+            i.thumbs.up.outline.icon
+            |upvoters
+        each upvoter_ids
+            +user_pill
+    if downvoter_ids
+        .ui.small.inline.grey.header 
+            i.thumbs.down.outline.icon
+            |downvoters
+        each downvoter_ids
+            +user_pill
+
+
+
+template(name='view_button')
+    a.ui.icon.compact.button.view(title='view' href="/m/#{model}/#{_id}/view")
+        //- i.right.chevron.large.icon
+        +i name='chevron right' cl='ui mini inline image'
+
+
+template(name='remove_button')
+    .ui.icon.basic.button.remove_doc(title='delete')
+        i.remove.red.big.icon.invert
+        //- |Delete
+
+template(name='remove_icon')
+    i.remove.icon.remove_doc(title='delete')
+    //- |Delete
+
+template(name='add_button')
+    a.ui.large.button.add(title="add #{model}")
+        //- |#{model.icon}
+        if model.icon
+            //- i.icon(class=icon)
+            +ismall name=model.icon cl='ui inline image'
+        else 
+            i.plus.icon
+        if label
+            |#{label}
+        //- |#{model}
+
+
+
+// template(name='edit_button')
+//     a.ui.button.icon.edit(title='Edit' href="/m/#{model}/#{_id}/edit")
+//         i.blue.pencil.icon
+//         |edit
+
+
+template(name='ai')
+    img(src="https://img.icons8.com/external-wanicon-lineal-wanicon/64/null/external-#{name}-artificial-intelligence-wanicon-lineal-wanicon.png")
+
+
+
+template(name='block')
+    // .ui.grid.segment.glow(class=color)
+    .ui.grid.segment.glo(class=color)
+        // .one.inverted.column.row.toggle_expanded.zoomer.pointer(title='expand' class=color)
+        .inverted.row.toggle_expanded.pointer.zoomer.glow(title='expand')
+            // .two.wide.column
+            .sixteen.wide.center.aligned.column
+                if is_expanded
+                    if icon
+                        +icolor name=icon color='ffffff' cl="ui mini inline image"
+                else
+                    if icon
+                        +i name=icon color='ffffff' cl="ui avatar image"
+                .ui.inline.header(class=color)
+                    // i.large.icon(class=icon)
+                    // | #{model}s
+                    if title
+                        strong #{title}
+                    else 
+                        |#{template}
+                if is_expanded
+                    i.small.grey.chevron.down.icon
+                else
+                    i.small.grey.chevron.right.icon
+        if is_expanded
+            .row
+                .sixteen.wide.small.scroll.column
+                    a.ui.small.basic.icon.compact.fluid.button(href="/p/#{template}")
+                        i.circular.external.icon
+                    // i.fullscreen.circular.link.icon.toggle_fullscreen
+                    +Template.dynamic template=template
+        
+
+// #{model}_item structure for child docs
+            
+template(name='model_crud')
+    // unless picked_model
+    .ui.icon.large.action.fluid.input
+        if model_search_value
+            i.large.red.remove.link.icon.zoomer.clear_search
+        else 
+            i.search.icon
+        input.model_search(type='text' placeholder='search' value=model_search_value)
+    .ui.green.basic.fluid.button.create_model
+        |add #{model_search_value}
+    if model_results
+        .ui.selection.link.animated.list.smallscroll
+            each model_results
+                a.ui.item.pick_model
+                    if image_id
+                        img.ui.avatar.image(src="{{c.url image_id width=300 height=300 gravity='face' crop='fill'}}")
+                    |#{title}
+    // else if model_search_value
+    
+    // if picked_models
+    .ui.header 
+        // |#{picked_models.length}
+        |picked #{model}s
+    each model_children
+        // +Template.dynamic template=child_model_item_template
+        .ui.horizontal.fluid.card.show_modal
+            .content
+                // +Template.dynamic template=child_model_item_template
+                // if image_id
+                //     .image
+                //         img.ui.image(src="{{c.url image_id width=300 height=300 gravity='face' crop='fill'}}")
+                // .content
+                //     a.ui.inline.header(href="/d/#{model}/#{_id}")
+                //         |#{title}
+                //     .ui.label #{model}
+                //     i.remove.link.circular.red.icon.zoomer.remove_model
+            
+            
+                .ui.grid
+                    .row
+                        // .column
+                        .fourteen.wide.column
+                            .left.floated
+                                img.ui.avatar.image(src="{{c.url author.profile_image_id height=200 width=200 gravity='face' crop='fill'}}")
+                                a.ui.inline.header
+                                    |!{title}
+                                div
+                                +eft_viewer_small
+                                // img(src="{{c.url image_id width=50 height=50}}")
+                                // div    
+                                // |!{content}
+                        .two.wide.column
+                            .right.floated
+                                if _is 'model' 'model'
+                                    // +template.dynamic template='ismall'
+                                    +ismall name='what-i-do' color='42E8C4' cl='ui inline image'
+                                div
+                                |#{when}
+                    .row
+                        .six.wide.column
+                            img.small.invert(src="{{c.url image_id width=10 height=10}}")
+                        .ten.wide.column
+                            |!{body}
+                            |!{brief}
+                            |!{content}
+                            |!{description}
+                    .sixteen.wide.column
+                        if currentUser.admin_mode
+                            .ui.tertiary.large.button.zoomer.remove_role 
+                                i.remove.icon
+                                |remove 
+                            .ui.tertiary.large.button.zoomer.toggle_assign 
+                                i.user.plus.icon
+                                | assign
+                            if assigned_to 
+                                |assigned to #{asigned_to.username}
+                            else 
+                                |unnassigned
+                            if is_assigning 
+                                each role_holders 
+                                    .ui.label #{username}
+                            else 
+                                with assigned_users
+                                    .ui.green.label #{username}
+                            a.ui.tertiary.right.floated.icon.large.button.zoomer.fly_right(href="/role/#{_id}/edit" title='edit role')
+                                i.setting.icon
+                        else
+                            // else if can_take
+                            if has_taken 
+                                |taken by #{taken_user.name}
+                                .ui.large.button.release_role
+                                    i.undo.icon
+                                    |release 
+                            else if can_take
+                                .ui.tertiary.large.button.zoomer.take_role 
+                                    i.checkmark.icon
+                                    | take
+                            else if is_taken 
+                                |taken by #{taken_user.name}
+                a.ui.tertiary.large.button.zoomer(href="/d/role/#{_id}")
+                    |view
+                    i.chevron.right.icon
+    // .ui.list
+            
+                    
+template(name='child_model_item_template')  
+    // if _is 'model' 'role'
+        // .ui.header this is a role
+    
+template(name='child_role_item_template')  
+    // if _is 'model' 'role'
+        // .ui.header this is a role
+    .ui.segment
+        if image_id
+            img.ui.avatar.image(src="{{c.url image_id width=300 height=300 gravity='face' crop='fill'}}")
+        a.inline.header(href="/d/#{model}/#{_id}")
+            |#{title}
+        .ui.label #{model}
+        i.remove.link.circular.red.icon.zoomer.remove_model
+            
+
+
+
+
+
+
+template(name='small_card')
+    a.ui.link.horizontal.card.zoomer.show_modal
+        .content 
+            a.inline.header
+                if _is 'model' 'org' 
+                    +i name='groups' color='83DFF4' cl='ui inline mini image'
+                if _is 'model' 'project'
+                    +i name='project' color='7229AF' cl='ui inline mini image'
+                if _is 'model' 'post'
+                    +i name='for-you' color='1255B8' cl='ui inline mini image'
+                if _is 'model' 'event'
+                    +i name='calendar' color='FAB005' cl='ui inline mini image'
+                if _is 'model' 'task'
+                    +i name='task' color='B785E1' cl='ui inline mini image'
+                if _is 'model' 'offer'
+                    +i name='hand-holding-heart' color='FF73EA' cl='ui inline mini image'
+                if _is 'model' 'request'
+                    +i name='commercial' color='40C057' cl='ui inline mini image'
+                if _is 'model' 'role'
+                    +i name='what-i-do' color='42E8C4' cl='ui inline mini image'
+                if _is 'model' 'resource'
+                    +i name='field-and-tractor' color='42E8C4' cl='ui inline mini image'    
+            |#{title} 
+            img.ui.fluid.image(src="{{c.url image_id width=50 height=50}}")
+        .content
+            .right.floated
+                |#{when}
+                div
+                |remove | assign
+
+
+      
+template(name='task_picker')
+        .ui.header 
+            +i name='shield'
+            |#{picked_tasks.count}
+            | tasks
+        // if is_admin
+        .ui.icon.large.input 
+            if task_search_value
+                i.large.red.remove.link.icon.zoomer.clear_search
+            else 
+                i.search.icon
+            input.task_search(type='text' placeholder='search' value=task_search_value)
+        if task_results
+            // .ui.selection.link.animated.list
+            each task_results
+                .ui.basic.circular.large.button.pick_task.zoomer
+                    i.grey.plus.icon
+                    if image_id
+                        img.ui.avatar.image(src="{{c.url image_id width=300 height=300 gravity='face' crop='fill'}}")
+                    |#{title}
+        // else if task_search_value
+        .ui.button.create_task
+            |add #{task_search_value}
+        // if picked_tasks
+        .ui.header 
+            |#{picked_tasks.count}
+            |picked tasks
+        .smallscroll
+            each picked_tasks
+                 .ui.horizontal.fluid.card.show_modal
+                    .content
+                        .ui.grid
+                            .row
+                                // .column
+                                .fourteen.wide.column
+                                    .left.floated
+                                        a.ui.inline.header
+                                            |!{title} 
+                                        img(src="{{c.url image_id width=50 height=50}}")
+                                        div
+                                        |!{content}
+                                .two.wide.column
+                                    .right.floated
+                                        if _is 'model' 'task'
+                                            +ismall name='what-i-do' color='42E8C4' cl='ui inline image'
+                                        div
+                                        |#{when}
+                            .row
+                                .sixteen.wide.column
+                                    +eft_view_item_small
+                                    if currentUser.admin_mode
+                                        .ui.tertiary.button.zoomer.remove_task 
+                                            i.remove.icon
+                                            |remove 
+                                        .ui.tertiary.button.zoomer.assign_task 
+                                            i.user.plus.icon
+                                            | assign
+                                        if is_assigning 
+                                            each task_holders 
+                                                .ui.label #{username}
+                                        else 
+                                            with assigned_users
+                                                .ui.green.label #{username}
+                                        a.ui.tertiary.right.floated.icon.button.zoomer.fly_right(href="/role/#{_id}/edit" title='edit role')
+                                            i.setting.icon
+                                    else
+                                        // else if can_take
+                                        .ui.tertiary.button.zoomer.take_role 
+                                            i.checkmark.icon
+                                            | take
+                                    a.ui.tertiary.button.zoomer(href="/role/#{_id}")
+                                        |view
+                                        i.chevron.right.icon
+                .ui.modal 
+                    .ui.header hi
+                    
+                    
+template(name='badge_picker')
+    .ui.header 
+        +i name='shield'
+        | badges
+    // if is_admin
+    .ui.icon.large.input 
+        if badge_search_value
+            i.large.red.remove.link.icon.zoomer.clear_search
+        else 
+            i.search.icon
+        input.badge_search(type='text' placeholder='search' value=badge_search_value)
+    if badge_results
+        .ui.selection.link.animated.list
+            each badge_results
+                .ui.item.pick_badge.zoomer
+                    img.ui.avatar.image(src="{{c.url image_id width=300 height=300 gravity='face' crop='fill'}}")
+                    |#{title}
+    // else if badge_search_value
+    .ui.button.create_badge
+        |add #{badge_search_value}
+    
+    if product_badges
+        .ui.header 
+            |#{product_badges.length}
+            |picked badges
+        .ui.list
+            each product_badges
+                .ui.item
+                    img.ui.avatar.image(src="{{c.url image_id width=300 height=300 gravity='face' crop='fill'}}")
+                    |#{title}
+                    i.remove.link.icon.zoomer.remove_badge
+
+template(name='event_picker')
+    .ui.header 
+            // +i name='shield'
+            |#{picked_tasks.count}
+    eventtasks
+        // if is_admin
+        .ui.icon.large.input 
+            if event_search_value
+                i.large.red.remove.link.icon.zoomer.clear_search
+            else 
+                i.search.icon
+            input.event_search(type='text' placeholder='search' value=event_search_value)
+        if event_results
+            // .ui.selection.link.animated.list
+            each event_results
+                .ui.basic.circular.large.button.pick_event.zoomer
+                    i.grey.plus.icon
+                    if image_id
+                        img.ui.avatar.image(src="{{c.url image_id width=300 height=300 gravity='face' crop='fill'}}")
+                    |#{title}
+        // else if event_search_value
+        .ui.button.create_event
+            |add #{event_search_value}
+        // if picked_events
+        .ui.header 
+            |#{picked_events.count}
+            |picked events
+        .smallscroll
+            each picked_events
+                 .ui.horizontal.fluid.card.show_modal
+                    .content
+                        .ui.grid
+                            .row
+                                // .column
+                                .fourteen.wide.column
+                                    .left.floated
+                                        a.ui.inline.header
+                                            |!{title} 
+                                        img(src="{{c.url image_id width=50 height=50}}")
+                                        div
+                                        |!{content}
+                                .two.wide.column
+                                    .right.floated
+                                        if _is 'model' 'event'
+                                            +ismall name='what-i-do' color='42E8C4' cl='ui inline image'
+                                        div
+                                        |#{when}
+                            .row
+                                .sixteen.wide.column
+                                    +eft_view_item_small
+                                    if currentUser.admin_mode
+                                        .ui.tertiary.button.zoomer.remove_event 
+                                            i.remove.icon
+                                            |remove 
+                                        .ui.tertiary.button.zoomer.assign_event 
+                                            i.user.plus.icon
+                                            | assign
+                                        if is_assigning 
+                                            each event_holders 
+                                                .ui.label #{username}
+                                        else 
+                                            with assigned_users
+                                                .ui.green.label #{username}
+                                        a.ui.tertiary.right.floated.icon.button.zoomer.fly_right(href="/role/#{_id}/edit" title='edit role')
+                                            i.setting.icon
+                                    else
+                                        // else if can_take
+                                        .ui.tertiary.button.zoomer.take_role 
+                                            i.checkmark.icon
+                                            | take
+                                    a.ui.tertiary.button.zoomer(href="/role/#{_id}")
+                                        |view
+                                        i.chevron.right.icon
+                .ui.modal 
+                    .ui.header hi
+
+template(name='save_button')
+    a.ui.button.large.icon.save(title='Save' href="/m/#{model}/#{_id}/view")
+        i.checkmark.icon
+        |save
+
+template(name='toggle_button')
+    .ui.icon.toggle.button(title=label)
+        i.icon(class=icon)
+    each picked
+        |#{username}
+
+
+template(name='view_user_button')
+    .view_user.view(title="view #{username}")
+        i.play.icon
+        |View
+
+template(name='add_model_button')
+    if currentUser
+        .ui.icon.button.add_model_doc(title="add #{model}")
+            i.plus.large.icon
+            if label
+                |#{model}
+
+template(name='create_model_view')
+        // div
+        +thing_picker model='post' icon='for-you' color='1255B8'
+        .ui.popup create post
+        //blue
+        +thing_picker model='offer' icon='hand-holding-heart' color='FF73EA'
+        .ui.popup create offer
+        //pink
+        +thing_picker model='request' icon='commercial' color='40C057' 
+        .ui.popup create request
+        //green
+        div
+        +thing_picker model='org' icon='building' color='83DFF4' 
+        .ui.popup create organization
+        //light blue
+        +thing_picker model='project' icon='project' color='7229AF' 
+        .ui.popup create project
+        //violet
+        +thing_picker model='event' icon='calendar' color='FAB005'
+        .ui.popup create event
+        //yellow
+        +thing_picker model='role' icon='what-i-do' color='42E8C4'
+        .ui.popup create role
+        //turquoise
+        +thing_picker model='tasks' icon='task' color='B785E1'
+        .ui.popup create task
+        //lavender
+        +thing_picker model='resource' icon='field-and-tractor' color='FD7E14'
+        .ui.popup create resource
+        +thing_picker model='skills' icon='wrench' color='ff0000'
+        .ui.popup create skill
+        //red
+        +thing_picker model='badges' icon='badge' color='1255B8'
+        .ui.popup create badge
+        //blue
+        div
+        +thing_picker model='datetime' icon='overtime--v1' color='FD7E14'
+        +thing_picker model='location' icon='worldwide-location' color='40C057'
+        +thing_picker model='accounts' icon='gold-bars' color='FAB005'
+            //people
+        .ui.divider
+            
+template(name='email_validation_check')
+    //- if email_verified
+    //-     .ui.large.button
+    //-         i.checkmark.icon
+    //-         |email validated
+    unless email_verified
+        .ui.fluid.button.send_verification
+            //- i.user.shield.icon
+            //- +i name='user-shield' cl='ui inline image'
+            |resend verification email
+        if times
+            .ui.label
+                |#{times}
+            //- else
+                //- |#{times}x sent
+        if is_staff
+            .ui.button.toggle_email_verified
+                |mark email verified
+        
+
+template(name='print_this')
+    .ui.icon.tertiary.button.print
+        i.orange.code.icon
+
+template(name='online_allies')
+    .ui.header 
+        +i name='marker'
+        |online allies
+    .ui.selectable.animated.list.smallscroll
+        each user_docs 
+            a.item.fly_right(href="/user/#{username}")
+                img.ui.avatar.image(src="{{c.url image_id width=400 height=400}}")
+                |#{username}
+                if tags 
+                    each tags 
+                        .ui.basic.label #{this}
+                        
+template(name='online_users')
+    if currentUser.admin_mode
+        .ui.header 
+            // i.green.globe.icon
+            |#{online_user_docs.count} 
+            |online users
+    //.ui.selectable.animated.list.smallscroll
+    // .hscroll
+    .ui.fluid.secondary.menu.hscroll
+        each online_user_docs 
+            a.item.online_user_item.fly_right.inline.zoomer(href="/user/#{username}")
+                img.ui.circular.tiny.image(src="{{c.url image_id width=400 height=400 gravity='face' crop='fill'}}")
+                
+                //click needs to pop up modal of user page
+                
+                // make sure comments aren't indented under code, it'll break
+            .ui.popup
+                |#{username}
+                if tags 
+                    each tags 
+                        .ui.basic.label #{this}
+
+template(name='open_requests')
+    .ui.header open requests
+    each open_requests 
+        a.ui.fluid.card(href="/request/#{_id}")
+            .content 
+                .header #{title}
+                .description
+                    .ui.header #{when}
+                            
+                    
+                    
+template(name='latest_activity')
+    .ui.header 
+        +i name='clock'
+        |latest activity
+    .ui.selection.animated.list
+        each latest_docs 
+            a.item(href="/#{model}/#{_id}") 
+                img.ui.avatar.image(src="{{c.url image_id width=200 height=200 gravity='face' crop='fill'}}")
+                .content
+                    .header #{title}
+                    .description
+                        |{{from_now _updated_timestamp}}
